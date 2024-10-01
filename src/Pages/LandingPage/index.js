@@ -1,0 +1,148 @@
+import {HeroSection, VenueSection, ServiceSection} from "../../Parts";
+import PackageSection from "../../Parts/Package";
+import { useState, useRef, useEffect } from 'react'
+import { XMarkIcon, PlayIcon, PauseIcon } from '@heroicons/react/24/outline'
+import ReactAudioPlayer from 'react-audio-player';
+import music from '../../Assets/music.mp3';
+import Navigation from "../../Parts/Navigation";
+
+import {
+ Button,
+ Dialog,
+ DialogHeader,
+ DialogBody,
+ DialogFooter,
+ Typography,
+} from "@material-tailwind/react";
+import MenuSection from "../../Parts/Menu";
+import ContactSection from "../../Parts/Contact";
+
+export default function LandingPage() {
+
+  const audioPlayerRef = useRef(null);
+
+  const [open, setOpen] = useState(false)
+
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    document.title = "Surganarasa";
+    setOpen(true);
+  }, []); //
+
+  const handleOpen = () => setOpen(!open);
+
+  // Callback function to play audio
+  const handlePlay = () => {
+   if (audioPlayerRef.current) {
+    if (isPlaying) {
+      audioPlayerRef.current.audioEl.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioPlayerRef.current.audioEl.current.play();
+      setIsPlaying(true);
+    }
+  }
+  };
+
+ return (
+  <>
+    <Navigation/>
+    <HeroSection/>
+    <ServiceSection/>
+    <PackageSection/>
+    <VenueSection/>
+    <MenuSection/>
+    <ContactSection/>
+    <ReactAudioPlayer
+      ref={audioPlayerRef}
+      src={music}
+      volume={1}
+      controls={false}
+      autoPlay
+    />
+    <div className="fixed bottom-4 right-4 z-40">
+      <Button
+        onClick={handlePlay}
+        className="bg-mainyellow-900 text-white rounded-full p-2" // Add padding for better touch target
+      >
+        {isPlaying ? (
+          <PauseIcon width={25} height={25} />
+        ) : (
+          <PlayIcon width={25} height={25} />
+        )}
+      </Button>
+    </div>
+
+    
+
+    <Dialog open={open} handler={handleOpen} className="bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center z-50  overflow-y-auto max-h-[400px]">
+    <DialogHeader>
+        <Typography variant="h5" color="blue-gray">
+            .
+        </Typography>
+    </DialogHeader>
+    <DialogBody className="grid place-items-center gap-4">
+        <Typography className="text-mainyellow-900" variant="h4">
+            Disclaimer
+        </Typography>
+        {/* <Typography className="text-left font-normal text-white">
+            a543
+        </Typography> */}
+
+        <ul className="list-disc px-8 py-2 text-white"> 
+            <li>Presentasi mungkin berbeda dari gambar dan dapat berubah tanpa pemberitahuan sebelumnya.</li> 
+            <li>Harga belum termasuk pajak dan biaya layanan.</li> 
+            <li>Harap diperhatikan bahwa makanan yang disiapkan mungkin mengandung atau diolah bersama kacang-kacangan, susu, telur, gandum, atau produk laut.</li> 
+        </ul>
+    </DialogBody>
+    <DialogFooter className="space-x-2">
+        <Button variant="text" color="white" onClick={() => {
+            handlePlay();
+            setOpen(false);
+        }}>
+            Close
+        </Button>
+        <button 
+            style={{ borderRadius: '14px 4px 14px 4px' }}
+            className="w-36 font-bold bg-mainyellow-900/80 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" 
+            type="button"
+            onClick={() => {
+                handlePlay();
+                setOpen(false);
+            }}
+        >
+            OK
+        </button>
+    </DialogFooter>
+</Dialog>
+
+    <div className="max-w-11">
+    {/* <Dialog open={open} handler={handleOpen}>
+            <DialogHeader>Its a simple modal.</DialogHeader>
+            <DialogBody>
+              The key to more success is to have a lot of pillows. Put it this way,
+              it took me twenty five years to get these plants, twenty five years of
+              blood sweat and tears, and I&apos;m never giving up, I&apos;m just
+              getting started. I&apos;m up to something. Fan luv.
+            </DialogBody>
+            <DialogFooter>
+              <Button
+                variant="text"
+                color="red"
+                onClick={handleOpen}
+                className="mr-1"
+              >
+                <span>Cancel</span>
+              </Button>
+              <Button variant="gradient" color="green" onClick={handleOpen}>
+                <span>Confirm</span>
+              </Button>
+            </DialogFooter>
+          </Dialog> */}
+    </div>
+         
+  </>
+ );
+
+}

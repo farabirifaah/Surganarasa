@@ -1,0 +1,60 @@
+{
+  "name": "surganarasa-v1",
+  "version": "1.0.0",
+  "proxy": "http://localhost:3000",
+  "private": true,
+  "dependencies": {
+    "@headlessui/react": "^2.1.8",
+    "@heroicons/react": "^2.1.5",
+    "@material-tailwind/react": "2.1.8",
+    "@next-tools/dynamic": "^0.0.11",
+    "axios": "^1.7.3",
+    "browser-image-compression": "^2.0.2",
+    "d3": "^7.0.0",
+    "d3-org-chart": "^3.1.1",
+    "firebase": "^10.13.2",
+    "react": "18.2.0",
+    "react-apexcharts": "^1.4.1",
+    "react-audio-player": "^0.17.0",
+    "react-awesome-reveal": "^4.2.14",
+    "react-data-table-component": "^7.6.2",
+    "react-dom": "18.2.0",
+    "react-lottie": "^1.2.4",
+    "react-medium-image-zoom": "^5.2.10",
+    "react-router-dom": "^6.26.0",
+    "react-scripts": "5.0.1",
+    "react-table": "^7.8.0",
+    "styled-components": "^6.1.12",
+    "swiper": "^11.1.14",
+    "use-sound": "^4.0.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.0"
+  }
+}

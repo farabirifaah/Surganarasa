@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/static/css/main.780e1026.css",
+    "main.js": "/static/js/main.29b69cfe.js",
+    "static/media/music.mp3": "/static/media/music.4b3a1c4907611389965f.mp3",
+    "static/media/bg8.svg": "/static/media/bg8.c2d345408ba6a4da5a99.svg",
+    "static/media/bg-hp5-sm.svg": "/static/media/bg-hp5-sm.efb673c03b7b3a38d422.svg",
+    "static/media/bg-hp8-sm.svg": "/static/media/bg-hp8-sm.06b275480f5fa3160fb8.svg",
+    "static/media/spec.svg": "/static/media/spec.8f1ec05700ba5bee25b5.svg",
+    "static/media/bg4.svg": "/static/media/bg4.09382981a2bdb411696d.svg",
+    "static/media/SR Logo Transparant.png": "/static/media/SR Logo Transparant.8832affd9eced7cc7ac1.png",
+    "static/media/DAVIDLIBRE2.ttf": "/static/media/DAVIDLIBRE2.7670eac57936d530cf14.ttf",
+    "static/media/JAWAPALSU.TTF": "/static/media/JAWAPALSU.d892a02a1658ce7d8dc3.TTF",
+    "index.html": "/index.html",
+    "main.780e1026.css.map": "/static/css/main.780e1026.css.map",
+    "main.29b69cfe.js.map": "/static/js/main.29b69cfe.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.780e1026.css",
+    "static/js/main.29b69cfe.js"
+  ]
+}

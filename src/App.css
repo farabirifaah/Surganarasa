@@ -1,0 +1,74 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@font-face {
+  font-family: 'Jawa';
+  src: local('Jawa'), url(./JAWAPALSU.TTF) format('truetype');
+}
+
+@font-face {
+  font-family: 'David Libre';
+  src: local('David Libre'), url(./DAVIDLIBRE2.ttf) format('truetype');
+}
+
+.font-surgana{
+  font-family: 'Jawa';
+  src: local('Jawa'), url(./JAWAPALSU.TTF) format('truetype');
+}
+
+.yellow-surgana{
+  color: #EECD3E;
+}
+.bg-green-surgana{
+  background-color: #003A32;
+}
+
+#google_translate_element {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.goog-te-gadget-simple {
+  background-color: #f9f9f9 !important;
+  border: none !important;
+  padding: 5px;
+  font-size: 14px;
+  color: #333;
+}
