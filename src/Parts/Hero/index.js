@@ -36,7 +36,7 @@ export default function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <Carousel autoplay={true} loop={true}>
+    <Carousel autoplay={true} loop={true} className="z-10">
       {sortedData.map((slide, index) => (
         <div key={index} className="relative h-full w-full">
           <img
@@ -74,13 +74,14 @@ export default function HeroSection() {
                   >
                     Menu
                   </button>
-                  <button
+                  <a
+                    href="https://wa.me/qr/JD5WKLTUL5LUC1"
                     style={{ borderRadius: '14px 4px 14px 4px' }}
-                    className="w-60 p-1 bg-mainyellow-900/70 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 text-center text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    className="w-60 p-2 bg-mainyellow-900/70 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 text-center text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                   >
                     Reservasi Sekarang
-                  </button>
+                  </a>
                 </div>
               </Slide>
             </div>

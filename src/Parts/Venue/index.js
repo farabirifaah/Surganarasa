@@ -80,11 +80,11 @@ export default function VenueSection() {
             <div className="flex flex-col xl:flex-row lg:flex-row gap-4 mx-auto max-w-7xl">
               <div className="flex-1 w-full">
                 {/* Left Column for Image and Thumbnails */}
-                <div className="relative w-full">
+                <div className="relative w-full hover:scale-105 hover:z-10 transition ease-in-out  ">
                   <Zoom>
                     <img
                       id="image"
-                      className="h-lvh lg:h-auto w-full max-w-full cursor-pointer max-h-96 rounded-lg object-cover object-center md:h-[480px]"
+                      className="h-lvh lg:h-auto w-full max-w-full cursor-pointer max-h-[400px] rounded-lg object-cover object-center md:h-[480px]"
                       src={active}
                       alt=""
                       onClick={() => setDialogOpen(true)} // Open dialog when the active image is clicked
@@ -96,11 +96,11 @@ export default function VenueSection() {
                   <div className="grid grid-cols-5 gap-4">
                     {data.map(({ imgelink, description, title }, index) => (
                       <Zoom delay={200 * index} key={index}>
-                        <div>
+                        <div className="">
                           <img
                             onClick={() => handleImageClick(imgelink, description, title, false)}
                             src={imgelink}
-                            className="xl:h-20 lg:h-16 md:h-16 h-14 w-full cursor-pointer rounded-lg object-cover object-center"
+                            className="xl:h-20 lg:h-16 md:h-16 h-14 w-full cursor-pointer rounded-lg object-cover object-center hover:scale-110 hover:z-10 transition ease-in-out"
                             alt="gallery-image"
                           />
                           <Typography className="font-normal mt-1 text-center text-sm text-mainyellow-900">

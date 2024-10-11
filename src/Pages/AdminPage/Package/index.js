@@ -24,13 +24,15 @@ const AdminPackage = () => {
   const [description, setDescription] = useState('');
   const [pax, setPax] = useState('');
   const [price, setPrice] = useState('');
-  const [image, setImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null); // New state for image File
+  const [existingImage, setExistingImage] = useState(''); // New state for existing image URL
   const [packages, setPackages] = useState([]);
   const [editingPackageId, setEditingPackageId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isBestSeller, setIsBestSeller] = useState(false);
   const [isHighlight, setIsHighlight] = useState(false);
+  const [isOther, setIsOther] = useState(false);
   
   // New states for image modal
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -61,18 +63,22 @@ const AdminPackage = () => {
       setDescription(pkg.description);
       setPax(pkg.pax);
       setPrice(pkg.price);
-      setImage(pkg.imageSrc);
+      setExistingImage(pkg.imageSrc); // Set existing image URL
+      setImageFile(null); // Reset image File
       setIsBestSeller(pkg.isBestSeller);
       setIsHighlight(pkg.isHighlight);
+      setIsOther(pkg.isOther);
       setEditingPackageId(pkg.id);
     } else {
       setName('');
       setDescription('');
       setPax('');
       setPrice('');
-      setImage(null);
+      setImageFile(null);
+      setExistingImage(''); // Reset existing image URL
       setIsBestSeller(false);
       setIsHighlight(false);
+      setIsOther(false);
       setEditingPackageId(null);
     }
     setIsModalOpen(true);
@@ -85,9 +91,11 @@ const AdminPackage = () => {
     setDescription('');
     setPax('');
     setPrice('');
-    setImage(null);
+    setImageFile(null);
+    setExistingImage('');
     setIsBestSeller(false);
     setIsHighlight(false);
+    setIsOther(false);
     setEditingPackageId(null);
     setErrorMessage('');
   };
@@ -112,10 +120,10 @@ const AdminPackage = () => {
     setErrorMessage('');
 
     try {
-      let imageURL = '';
-
-      if (image) {
-        const compressedImage = await handleImageCompression(image);
+      let imageURL = existingImage; // Default to existing image
+      console.log(imageURL);
+      if (imageFile) {
+        const compressedImage = await handleImageCompression(imageFile);
         const imageRef = ref(storage, `package_images/${compressedImage.name}`);
         const snapshot = await uploadBytes(imageRef, compressedImage);
         imageURL = await getDownloadURL(snapshot.ref);
@@ -130,7 +138,8 @@ const AdminPackage = () => {
           price, 
           imageSrc: imageURL, 
           isBestSeller, 
-          isHighlight 
+          isHighlight,
+          isOther
         });
       } else {
         await addDoc(collection(db, 'package'), { 
@@ -140,13 +149,15 @@ const AdminPackage = () => {
           price, 
           imageSrc: imageURL, 
           isBestSeller, 
-          isHighlight 
+          isHighlight,
+          isOther
         });
       }
       closeModal();
       fetchData();
     } catch (error) {
       console.error('Error saving document: ', error);
+      setErrorMessage('Failed to save the package. Please try again.');
     }
   };
 
@@ -159,6 +170,7 @@ const AdminPackage = () => {
         fetchData();
       } catch (error) {
         console.error('Error deleting document: ', error);
+        alert('Failed to delete the package. Please try again.');
       }
     }
   };
@@ -174,7 +186,7 @@ const AdminPackage = () => {
     setDialogOpen(false);
   };
 
-  const TABLE_HEAD = ["Name", "Description", "Pax", "Price", "Image", "Best Seller", "Highlight", "Actions"];
+  const TABLE_HEAD = ["Name", "Description", "Pax", "Price", "Image", "Best Seller", "Highlight", "Other", "Actions"];
 
   return (
     <div className='container mx-auto mt-10'>
@@ -250,10 +262,20 @@ const AdminPackage = () => {
             </Typography>
             <input
               type="file"
-              onChange={(e) => setImage(e.target.files[0])}
+              onChange={(e) => {
+                if (e.target.files[0]) {
+                  setImageFile(e.target.files[0]);
+                }
+              }}
               className="block w-full text-gray-600"
               accept="image/*"
             />
+            {/* Show existing image when editing and no new image is selected */}
+            {editingPackageId && existingImage && !imageFile && (
+              <div className="mt-2">
+                <img src={existingImage} alt="Existing Package" className="h-20 w-20 object-cover rounded" />
+              </div>
+            )}
           </div>
           <div className="flex items-center">
             <input
@@ -263,6 +285,15 @@ const AdminPackage = () => {
               className="mr-2"
             />
             <span>Best Seller</span>
+          </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              checked={isOther}
+              onChange={(e) => setIsOther(e.target.checked)}
+              className="mr-2"
+            />
+            <span>Is Other</span>
           </div>
           <div className="flex items-center">
             <input
@@ -285,14 +316,14 @@ const AdminPackage = () => {
       <Dialog size="lg" className="bg-white" open={dialogOpen} handler={handleDialogClose}>
         <DialogHeader className="justify-between">
         </DialogHeader>
-         <DialogBody>
+        <DialogBody>
           <Zoom>
-           <img
-             className="h-64 lg:h-auto md:h-auto sm:h-auto w-full rounded-lg object-cover object-center"
-             src={active}
-             alt={activeTitle}
-             style={{ maxHeight: 600 }}
-           />
+            <img
+              className="h-64 lg:h-auto md:h-auto sm:h-auto w-full rounded-lg object-cover object-center"
+              src={active}
+              alt={activeTitle}
+              style={{ maxHeight: 600 }}
+            />
           </Zoom>
           <Typography className="mt-5 font-normal text-white text-sm">
             {activeDescription}
@@ -346,7 +377,7 @@ const AdminPackage = () => {
                     </Typography>
                   </td>
                   <td className="p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal">
+                    <Typography variant="small" color="blue-gray" className="font-normal max-w-[40rem]">
                       {pkg.description}
                     </Typography>
                   </td>
@@ -357,7 +388,7 @@ const AdminPackage = () => {
                   </td>
                   <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-normal">
-                    Rp. {pkg.price}
+                      Rp. {pkg.price}
                     </Typography>
                   </td>
                   <td className="p-4">
@@ -380,6 +411,11 @@ const AdminPackage = () => {
                       {pkg.isHighlight ? 'Yes' : 'No'}
                     </Typography>
                   </td>
+                  <td className="p-4 text-center">
+                    <Typography variant="small" color="blue-gray" className="font-normal">
+                      {pkg.isOther ? 'Yes' : 'No'}
+                    </Typography>
+                  </td>
                   <td className="p-4">
                     <IconButton onClick={() => openModal(pkg)} className="mr-2">
                       <PencilSquareIcon color='white' width={16} height={16}/>
@@ -392,7 +428,7 @@ const AdminPackage = () => {
               ))
             ) : (
               <tr>
-                <td className="py-2 px-4 border-b text-center" colSpan="8">
+                <td className="py-2 px-4 border-b text-center" colSpan="9">
                   No data available
                 </td>
               </tr>

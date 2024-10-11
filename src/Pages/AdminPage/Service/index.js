@@ -185,7 +185,7 @@ const AdminPackage = () => {
       <Dialog size="sm" open={isModalOpen} handler={closeModal} className="p-4">
         <DialogHeader className="relative m-0 block">
           <Typography variant="h4" color="blue-gray">
-            {editingPackageId ? 'Edit Package' : 'Add Package'}
+            {editingPackageId ? 'Edit Service' : 'Add Service'}
           </Typography>
           <IconButton
             size="sm"
@@ -279,7 +279,7 @@ const AdminPackage = () => {
         </DialogBody>
         <DialogFooter>
           <Button className="ml-auto" onClick={handleSubmit}>
-            {editingPackageId ? 'Update Package' : 'Add Package'}
+            {editingPackageId ? 'Update Service' : 'Add Service'}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -317,8 +317,8 @@ const AdminPackage = () => {
       {/* Table for Displaying Packages */}
       <Card className="h-full w-full overflow-scroll">
         <div className='flex flex-auto flex-row justify-between m-10'>
-          <Typography variant='h4'>Package</Typography>
-          <Button onClick={() => openModal()} variant="gradient">Add Package</Button>
+          <Typography variant='h4'>Service</Typography>
+          <Button onClick={() => openModal()} variant="gradient">Add Service</Button>
         </div>
         <table className="w-full min-w-max table-auto text-left">
           <thead>

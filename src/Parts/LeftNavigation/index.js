@@ -51,7 +51,7 @@ const dataMenu = [
     title: "Data",
     subItems: [
      {
-      id: 23,
+      id: 24,
       title: "Slide Show",
       link: "/admin/slideShow",
       icon: <PhotoIcon strokeWidth={3} className="h-4 w-5" />,

@@ -5,27 +5,26 @@ import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
 
-const firebaseConfig = {
- apiKey: "AIzaSyAy0qo08fR-7S3P93Uw7gzs1iKR6ns6Occ",
- authDomain: "surganarasa-36192.firebaseapp.com",
- projectId: "surganarasa-36192",
- storageBucket: "surganarasa-36192.appspot.com",
- messagingSenderId: "537796076596",
- appId: "1:537796076596:web:5cab02fa75065279155661",
- measurementId: "G-TTCQYR0NNR"
-};
-
-//live production
 // const firebaseConfig = {
-//  apiKey: "AIzaSyB-Ua-2vMH-iihQd68ti8_4u9Plx2X-xD8",
-//  authDomain: "surganarasa-b202d.firebaseapp.com",
-//  projectId: "surganarasa-b202d",
-//  storageBucket: "surganarasa-b202d.appspot.com",
-//  messagingSenderId: "1034942965633",
-//  appId: "1:1034942965633:web:9902316db518af3f876a80",
-//  measurementId: "G-8REV2KYPLZ"
+//  apiKey: "AIzaSyAy0qo08fR-7S3P93Uw7gzs1iKR6ns6Occ",
+//  authDomain: "surganarasa-36192.firebaseapp.com",
+//  projectId: "surganarasa-36192",
+//  storageBucket: "surganarasa-36192.appspot.com",
+//  messagingSenderId: "537796076596",
+//  appId: "1:537796076596:web:5cab02fa75065279155661",
+//  measurementId: "G-TTCQYR0NNR"
 // };
 
+ //live production
+const firebaseConfig = {
+ apiKey: "AIzaSyC8D58uiFSAaj8oj0Sdhjdqd2AP5zyrSeo",
+ authDomain: "surganarasa-6464d.firebaseapp.com",
+ projectId: "surganarasa-6464d",
+ storageBucket: "surganarasa-6464d.appspot.com",
+ messagingSenderId: "525337089139",
+ appId: "1:525337089139:web:ce2ebe235028d85261c606",
+ measurementId: "G-HFKDS0GHC8"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);

@@ -1,148 +1,200 @@
-import {HeroSection, VenueSection, ServiceSection} from "../../Parts";
-import PackageSection from "../../Parts/Package";
-import { useState, useRef, useEffect } from 'react'
-import { XMarkIcon, PlayIcon, PauseIcon } from '@heroicons/react/24/outline'
-import ReactAudioPlayer from 'react-audio-player';
-import music from '../../Assets/music.mp3';
-import Navigation from "../../Parts/Navigation";
-
 import {
- Button,
- Dialog,
- DialogHeader,
- DialogBody,
- DialogFooter,
- Typography,
+  HeroSection,
+  VenueSection,
+  ServiceSection,
+} from "../../Parts";
+import PackageSection from "../../Parts/Package";
+import { useState, useRef, useEffect } from "react";
+import { XMarkIcon, PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
+import ReactAudioPlayer from "react-audio-player";
+import music from "../../Assets/music.mp3";
+import Navigation from "../../Parts/Navigation";
+import {
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Typography,
 } from "@material-tailwind/react";
 import MenuSection from "../../Parts/Menu";
 import ContactSection from "../../Parts/Contact";
+import FooterSection from "../../Parts/Footer";
+import InstagramFeed from "../../Parts/Gallery";
+import FeatureSection from "../../Parts/Features";
+import PackageOtherSection from "../../Parts/PackageOther";
+import PromoSection from "../../Parts/Promo";
 
 export default function LandingPage() {
-
   const audioPlayerRef = useRef(null);
 
-  const [open, setOpen] = useState(false)
-
+  const [open, setOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Scroll handler to detect scroll position and change navigation background
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY; // Get current scroll position
+      setIsScrolled(currentScrollY > 1080); // Set isScrolled based on scroll position
+      console.log(`Current scroll position: ${currentScrollY}`); // Log scroll position
+    };
+  
+    window.addEventListener('scroll', handleScroll); // Add scroll event listener
+  
+    // Cleanup on component unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
 
   useEffect(() => {
-    document.title = "Surganarasa";
-    setOpen(true);
-  }, []); //
+    document.title = "Surganarasa"; // Set page title
+    setOpen(true); // Open the dialog on page load
+  }, []);
 
+  // Toggle modal open state
   const handleOpen = () => setOpen(!open);
 
-  // Callback function to play audio
+  // Play/pause audio based on the current state
   const handlePlay = () => {
-   if (audioPlayerRef.current) {
-    if (isPlaying) {
-      audioPlayerRef.current.audioEl.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioPlayerRef.current.audioEl.current.play();
-      setIsPlaying(true);
+    if (audioPlayerRef.current) {
+      if (isPlaying) {
+        audioPlayerRef.current.audioEl.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioPlayerRef.current.audioEl.current.play();
+        setIsPlaying(true);
+      }
     }
-  }
   };
 
- return (
-  <>
-    <Navigation/>
-    <HeroSection/>
-    <ServiceSection/>
-    <PackageSection/>
-    <VenueSection/>
-    <MenuSection/>
-    <ContactSection/>
-    <ReactAudioPlayer
-      ref={audioPlayerRef}
-      src={music}
-      volume={1}
-      controls={false}
-      autoPlay
-    />
-    <div className="fixed bottom-4 right-4 z-40">
-      <Button
-        onClick={handlePlay}
-        className="bg-mainyellow-900 text-white rounded-full p-2" // Add padding for better touch target
-      >
-        {isPlaying ? (
-          <PauseIcon width={25} height={25} />
-        ) : (
-          <PlayIcon width={25} height={25} />
-        )}
-      </Button>
-    </div>
+  return (
+    <>
+      <Navigation />
+      <HeroSection />
+      <ServiceSection />
+      <FeatureSection />
+      <PackageSection />
+      <PackageOtherSection />
+      <VenueSection />
+      <MenuSection />
+      <InstagramFeed />
+      <ContactSection />
+      <FooterSection />
 
-    
+      {/* Scroll Position Debug */}
+      <Typography>{isScrolled ? "Scrolled > 1080px" : "Not Scrolled"}</Typography>
 
-    <Dialog open={open} handler={handleOpen} className="bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center z-50  overflow-y-auto max-h-[400px]">
-    <DialogHeader>
-        <Typography variant="h5" color="blue-gray">
-            .
-        </Typography>
-    </DialogHeader>
-    <DialogBody className="grid place-items-center gap-4">
-        <Typography className="text-mainyellow-900" variant="h4">
-            Disclaimer
-        </Typography>
-        {/* <Typography className="text-left font-normal text-white">
-            a543
-        </Typography> */}
+      {/* Audio Player */}
+      <ReactAudioPlayer
+        ref={audioPlayerRef}
+        src={music}
+        volume={1}
+        controls={false}
+        autoPlay
+      />
 
-        <ul className="list-disc px-8 py-2 text-white"> 
-            <li>Presentasi mungkin berbeda dari gambar dan dapat berubah tanpa pemberitahuan sebelumnya.</li> 
-            <li>Harga belum termasuk pajak dan biaya layanan.</li> 
-            <li>Harap diperhatikan bahwa makanan yang disiapkan mungkin mengandung atau diolah bersama kacang-kacangan, susu, telur, gandum, atau produk laut.</li> 
-        </ul>
-    </DialogBody>
-    <DialogFooter className="space-x-2">
-        <Button variant="text" color="white" onClick={() => {
-            handlePlay();
-            setOpen(false);
-        }}>
-            Close
+      {/* Audio Control and Instagram Button */}
+      <div className="fixed bottom-4 right-4 z-40 grid grid-rows-2 gap-2">
+        <a
+          href="https://www.instagram.com/surganarasarestaurant/"
+          className="bg-pink-300 text-white rounded-full p-2 max-w-10"
+        >
+          <svg
+            className="h-full w-full"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              fillRule="evenodd"
+              d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </a>
+
+        <Button
+          onClick={handlePlay}
+          className="bg-mainyellow-900 text-white rounded-full p-2 max-w-10"
+        >
+          {isPlaying ? <PauseIcon className="w-full h-full" /> : <PlayIcon className="w-full h-full" />}
         </Button>
-        <button 
-            style={{ borderRadius: '14px 4px 14px 4px' }}
-            className="w-36 font-bold bg-mainyellow-900/80 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" 
+      </div>
+
+      {/* Modal Dialog */}
+      <Dialog
+      size="lg"
+        open={open}
+        handler={handleOpen}
+        className="bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center z-50"
+      >
+        <DialogHeader>
+          <Typography variant="h5" color="blue-gray">
+            .
+          </Typography>
+        </DialogHeader>
+        <DialogBody className="grid place-items-center gap-6 px-10 overflow-y-auto max-h-[500px]">
+         
+          <Typography variant="paragraph" className="text-center text-white">
+            Dengan rasa syukur yang tak terhingga, kami ingin mengucapkan terima kasih
+            atas kesetiaan Anda sebagai pelanggan Surgana Rasa. Anda adalah pelanggan yang
+            berharga dan kami merasa terhormat memiliki Anda sebagai salah satu pelanggan
+            kami.
+          </Typography>
+          <Typography variant="paragraph" className="text-center text-white">
+            Selama bertahun-tahun, kehadiran Anda secara teratur telah menjadikan Anda
+            sebagai anggota penting dari keluarga Surgana Rasa. Dukungan Anda yang terus
+            menerus adalah motivasi terbesar kami dalam mengejar kesempurnaan kuliner.
+          </Typography>
+          <Typography variant="paragraph" className="text-center text-white">
+            Kami menikmati setiap hidangan yang Anda nikmati bersama kami, setiap momen
+            yang Anda habiskan di restoran kami. Kepuasan Anda adalah prioritas utama
+            kami dan kami akan melakukan segala cara untuk terus memberikan pengalaman
+            bersantap yang tak terlupakan bagi Anda.
+          </Typography>
+          <Typography variant="paragraph" className="text-center text-white">
+            Jangan ragu untuk memberi tahu kami saran, preferensi, atau kebutuhan spesifik
+            Anda. Kami di sini untuk melayani Anda dan membuat setiap kunjungan Anda ke
+            Surgana Rasa menjadi luar biasa.
+          </Typography>
+          <Typography variant="paragraph" className="text-center text-white">
+            Kami menantikan kedatangan Anda kembali dan terus memanjakan lidah Anda.
+          </Typography>
+          <Typography variant="paragraph" className="text-center text-white">
+            Hormat kami,
+          </Typography>
+          <Typography variant="paragraph" className="text-center text-mainyellow-900 font-extrabold ">
+            Surgana Rasa
+          </Typography>
+
+
+
+
+
+
+
+
+        </DialogBody>
+        <DialogFooter className="space-x-2">
+          <Button variant="text" color="white" onClick={handleOpen}>
+            Close
+          </Button>
+          <button
+            style={{ borderRadius: "14px 4px 14px 4px" }}
+            className="w-36 font-bold bg-mainyellow-900/80 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
             type="button"
             onClick={() => {
-                handlePlay();
-                setOpen(false);
+              handlePlay();
+              setOpen(false);
             }}
-        >
+          >
             OK
-        </button>
-    </DialogFooter>
-</Dialog>
-
-    <div className="max-w-11">
-    {/* <Dialog open={open} handler={handleOpen}>
-            <DialogHeader>Its a simple modal.</DialogHeader>
-            <DialogBody>
-              The key to more success is to have a lot of pillows. Put it this way,
-              it took me twenty five years to get these plants, twenty five years of
-              blood sweat and tears, and I&apos;m never giving up, I&apos;m just
-              getting started. I&apos;m up to something. Fan luv.
-            </DialogBody>
-            <DialogFooter>
-              <Button
-                variant="text"
-                color="red"
-                onClick={handleOpen}
-                className="mr-1"
-              >
-                <span>Cancel</span>
-              </Button>
-              <Button variant="gradient" color="green" onClick={handleOpen}>
-                <span>Confirm</span>
-              </Button>
-            </DialogFooter>
-          </Dialog> */}
-    </div>
-         
-  </>
- );
-
+          </button>
+        </DialogFooter>
+      </Dialog>
+    </>
+  );
 }

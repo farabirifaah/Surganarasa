@@ -14,6 +14,7 @@ import {
  Typography,
 } from "@material-tailwind/react";
 import MenuSection from "../../Parts/Menu";
+import FooterSection from '../../Parts/Footer';
 
 export default function MenuPage() {
 
@@ -45,7 +46,8 @@ export default function MenuPage() {
  return (
   <>
     <Navigation/>
-    <MenuSection totalMaxData={1000} classes={" h-full"} showButton={false}/>
+    <MenuSection totalMaxData={1000} classes={" h-full pt-24"} showButton={false}/>
+    <FooterSection/>
     <ReactAudioPlayer
       ref={audioPlayerRef}
       src={music}
@@ -75,8 +77,8 @@ export default function MenuPage() {
         </Typography>
     </DialogHeader>
     <DialogBody className="grid place-items-center gap-4">
-        <Typography className="text-mainyellow-900" variant="h4">
-            Disclaimer
+      <Typography className="text-mainyellow-900 mb-6 font-medium" variant="h5">
+            Hallo Pengunjung Surgana Rasa
         </Typography>
 
         <ul className="list-disc px-8 text-white"> 

@@ -20,15 +20,15 @@ import { Zoom } from 'react-awesome-reveal';
 
 const AdminMenu = () => {
   const [menuName, setMenuName] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(' ');
   const [type, setType] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
   const [price, setPrice] = useState('');
   const [isAvailable, setIsAvailable] = useState(false);
   const [measurement, setMeasurement] = useState('');
-  const [variants, setVariants] = useState([]);
   const [selectedVariants, setSelectedVariants] = useState([]);
+  const [variantSubOptions, setVariantSubOptions] = useState({}); // State for sub-options
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [types, setTypes] = useState([]);
@@ -43,7 +43,7 @@ const AdminMenu = () => {
   const [activeDescription, setActiveDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false); // Loading state
 
-  const measurements = ['ons', 'kg', 'pcs', 'portion'];
+  const measurements = ['ons', 'kg', 'pcs', 'porsi', 'gr', 'gelas', 'buah'];
 
   const fetchData = async () => {
     try {
@@ -84,24 +84,10 @@ const AdminMenu = () => {
     }
   };
 
-  const fetchVariants = async () => {
-    try {
-      const variantQuerySnapshot = await getDocs(collection(db, 'menuVariants'));
-      const variantList = variantQuerySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setVariants(variantList);
-    } catch (error) {
-      console.error('Error fetching variants: ', error);
-    }
-  };
-
   useEffect(() => {
     fetchData();
     fetchCategories();
     fetchTypes();
-    fetchVariants();
   }, []);
 
   const openModal = (menu = null) => {
@@ -114,19 +100,17 @@ const AdminMenu = () => {
       setIsAvailable(menu.isAvailable || false);
       setMeasurement(menu.measurement || '');
 
-      // Ensure variants are defined and load them safely
-      const currentVariants = menu.variants && Array.isArray(menu.variants) ? menu.variants.map(v => v.name) : [];
-      setSelectedVariants(currentVariants);
+      const currentVariants = menu.variants && Array.isArray(menu.variants) ? menu.variants : [];
+      setSelectedVariants(currentVariants.map(v => v.name));
+      setVariantSubOptions(
+        currentVariants.reduce((acc, v) => {
+          acc[v.name] = { subOptions: v.subOptions || [] };
+          return acc;
+        }, {})
+      );
 
       setEditingMenuId(menu.id);
       setImage(null);
-      
-      // Initialize variant images state
-      const currentVariantImages = {};
-      (menu.variants || []).forEach(variant => {
-          currentVariantImages[variant.name] = variant.image || ''; // Initialize with existing image URL
-      });
-      setVariantImages(currentVariantImages);
     } else {
       setMenuName('');
       setCategory('');
@@ -138,7 +122,7 @@ const AdminMenu = () => {
       setImage(null);
       setEditingMenuId(null);
       setSelectedVariants([]);
-      setVariantImages({}); // Reset variant images on new entry
+      setVariantSubOptions({});
     }
     setNewVariant('');
     setIsModalOpen(true);
@@ -158,7 +142,7 @@ const AdminMenu = () => {
     setEditingMenuId(null);
     setSelectedVariants([]);
     setNewVariant('');
-    setVariantImages({}); // Reset on close
+    setVariantSubOptions({});
     setErrorMessage('');
   };
 
@@ -174,80 +158,113 @@ const AdminMenu = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
-    setIsLoading(true); // Start loading state
-
-    // Validate inputs
+    setIsLoading(true);
+  
     if (!menuName || !category || !type || !description || !price || !measurement) {
       setErrorMessage('Please fill in all fields.');
-      setIsLoading(false); // Stop loading state
+      setIsLoading(false);
       return;
     }
-
+  
     try {
-      let imageURL;
-
-      // Only compress and upload the new main image if provided
-      if (image) {
+      let imageURL = '';
+  
+      // Check if editing an existing menu and no new image is uploaded
+      if (editingMenuId && !image) {
+        // Retain the old image URL if no new image is uploaded
+        const currentMenu = menuItems.find((menu) => menu.id === editingMenuId);
+        imageURL = currentMenu ? currentMenu.image : '';
+      } else if (image) {
+        // Upload new image only if a new image is provided
         const compressedImage = await handleImageCompression(image);
         const imageRef = ref(storage, `menu_images/${compressedImage.name}`);
         const snapshot = await uploadBytes(imageRef, compressedImage);
         imageURL = await getDownloadURL(snapshot.ref);
       }
-
+  
+      const variantsWithSubOptions = selectedVariants.map((variant) => ({
+        name: variant,
+        subOptions: variantSubOptions[variant]?.subOptions || [],
+      }));
+  
+      const menuData = {
+        menuName,
+        category,
+        type,
+        description,
+        price: parseFloat(price),
+        isAvailable,
+        measurement,
+        variants: variantsWithSubOptions,
+        image: imageURL, // Retain old image if no new image is uploaded
+      };
+  
       if (editingMenuId) {
         const menuRef = doc(db, 'menu', editingMenuId);
-        await updateDoc(menuRef, { 
-          menuName, 
-          category, 
-          type, 
-          description, 
-          price: parseFloat(price), 
-          isAvailable, 
-          measurement,
-          ...(imageURL ? { image: imageURL } : {}), // Include image only if a new image is provided
-          variants: await Promise.all(selectedVariants.map(async (variant) => {
-            const variantImage = variantImages[variant];
-            if (variantImage) {
-              // Only compress and upload the new variant image if provided
-              const compressedVariantImage = await handleImageCompression(variantImage);
-              const variantImageRef = ref(storage, `variant_images/${compressedVariantImage.name}`);
-              const snapshot = await uploadBytes(variantImageRef, compressedVariantImage);
-              return { name: variant, image: await getDownloadURL(snapshot.ref) };
-            }
-            return { name: variant }; // Return variant without an image if none provided
-          })),
-        });
+        await updateDoc(menuRef, menuData);
       } else {
-        await addDoc(collection(db, 'menu'), { 
-          menuName, 
-          category, 
-          type, 
-          description, 
-          price: parseFloat(price), 
-          isAvailable, 
-          measurement,
-          variants: await Promise.all(selectedVariants.map(async (variant) => {
-            const variantImage = variantImages[variant];
-            if (variantImage) {
-              // Only compress and upload the new variant image if provided
-              const compressedVariantImage = await handleImageCompression(variantImage);
-              const variantImageRef = ref(storage, `variant_images/${compressedVariantImage.name}`);
-              const snapshot = await uploadBytes(variantImageRef, compressedVariantImage);
-              return { name: variant, image: await getDownloadURL(snapshot.ref) };
-            }
-            return { name: variant }; // Return variant without an image if none provided
-          })),
-          image: imageURL, // Always set the image if it's a new document
-        });
+        await addDoc(collection(db, 'menu'), menuData);
       }
+  
       closeModal();
       fetchData();
     } catch (error) {
       console.error('Error saving document: ', error);
       setErrorMessage('Error saving document: ' + error.message);
     } finally {
-      setIsLoading(false); // Stop loading state after the operation
+      setIsLoading(false);
     }
+  };
+  
+  const handleAddVariant = () => {
+    if (newVariant && !selectedVariants.includes(newVariant)) {
+      setSelectedVariants([...selectedVariants, newVariant]);
+      setVariantSubOptions({ ...variantSubOptions, [newVariant]: { subOptions: [] } });
+      setNewVariant('');
+    }
+  };
+
+  const handleSubOptionChange = (variant, value) => {
+    setVariantSubOptions({
+      ...variantSubOptions,
+      [variant]: {
+        ...variantSubOptions[variant],
+        newSubOption: value,
+      },
+    });
+  };
+
+  const handleAddSubOption = (variant) => {
+    const newSubOption = variantSubOptions[variant]?.newSubOption?.trim();
+    if (newSubOption && !variantSubOptions[variant].subOptions?.includes(newSubOption)) {
+      setVariantSubOptions({
+        ...variantSubOptions,
+        [variant]: {
+          ...variantSubOptions[variant],
+          subOptions: [...(variantSubOptions[variant].subOptions || []), newSubOption],
+          newSubOption: '',
+        },
+      });
+    }
+  };
+
+  // Function to delete a variant
+  const handleDeleteVariant = (variantName) => {
+    setSelectedVariants(selectedVariants.filter((variant) => variant !== variantName));
+    const newVariantSubOptions = { ...variantSubOptions };
+    delete newVariantSubOptions[variantName];
+    setVariantSubOptions(newVariantSubOptions);
+  };
+
+  // Function to delete a subOption within a variant
+  const handleDeleteSubOption = (variant, subOption) => {
+    setVariantSubOptions({
+      ...variantSubOptions,
+      [variant]: {
+        ...variantSubOptions[variant],
+        subOptions: variantSubOptions[variant].subOptions.filter((so) => so !== subOption),
+      },
+    });
   };
 
   const handleDelete = async (id) => {
@@ -274,22 +291,7 @@ const AdminMenu = () => {
     }
   };
 
-  const TABLE_HEAD = ["Image", "Menu Name", "Category", "Type", "Description", "Price", "Available", "Measurement", "Variants", "Actions"];
-
-  const handleAddVariant = () => {
-    if (newVariant && !selectedVariants.includes(newVariant)) {
-      setSelectedVariants([...selectedVariants, newVariant]);
-      setVariantImages({ ...variantImages, [newVariant]: null }); // Initialize state for new variant image
-      setNewVariant(''); // Clear the input field
-    }
-  };
-
-  const handleVariantImageChange = (variant, file) => {
-    setVariantImages({
-      ...variantImages,
-      [variant]: file, // Update the image for the specific variant
-    });
-  };
+  const TABLE_HEAD = ["No.","Image", "Menu Name", "Category", "Type", "Description", "Price", "Available", "Measurement", "Variants", "Actions"];
 
   return (
     <div className='container mx-auto mt-10'>
@@ -418,16 +420,44 @@ const AdminMenu = () => {
               <Button onClick={handleAddVariant}>Add</Button>
             </div>
             {selectedVariants.map((variant, index) => (
-              <div key={index} className="flex items-center mb-2">
+              <div key={index} className="mb-4">
                 <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
                   {variant}
                 </Typography>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleVariantImageChange(variant, e.target.files[0])}
-                  className="ml-2"
-                />
+                <div className="flex items-center mb-2">
+                  <Input
+                    color="gray"
+                    size="lg"
+                    placeholder={`option for ${variant}`}
+                    value={variantSubOptions[variant]?.newSubOption || ''}
+                    onChange={(e) => handleSubOptionChange(variant, e.target.value)}
+                    className="mr-2"
+                  />
+                  <Button onClick={() => handleAddSubOption(variant)}>option</Button>
+                  <IconButton
+                    className="ml-2"
+                    onClick={() => handleDeleteVariant(variant)}
+                    variant="text"
+                  >
+                    <TrashIcon className="h-5 w-5 text-red-500" />
+                  </IconButton>
+                </div>
+                {variantSubOptions[variant]?.subOptions?.length > 0 && (
+                  <ul className="mt-2">
+                    {variantSubOptions[variant].subOptions.map((subOption, i) => (
+                      <li key={i} className="flex items-center justify-between">
+                        <span>{subOption}</span>
+                        <IconButton
+                          className="ml-2"
+                          onClick={() => handleDeleteSubOption(variant, subOption)}
+                          variant="text"
+                        >
+                          <TrashIcon className="h-5 w-5 text-red-500" />
+                        </IconButton>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             ))}
           </div>
@@ -509,8 +539,11 @@ const AdminMenu = () => {
           </thead>
           <tbody>
             {menuItems.length > 0 ? (
-              menuItems.map((menu) => (
+              menuItems.map((menu, index) => (
                 <tr key={menu.id} className={`even:bg-blue-gray-50/50`}>
+                  <td className='p-4'>
+                    {index + 1}.
+                  </td>
                   <td className="p-4">
                     {menu.image && (
                       <img
