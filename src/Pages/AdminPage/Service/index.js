@@ -19,18 +19,15 @@ import {
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Zoom } from 'react-awesome-reveal';
 
-const AdminPackage = () => {
-  const [name, setName] = useState('');
+const ServiceAdmin = () => {
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [pax, setPax] = useState('');
-  const [price, setPrice] = useState('');
   const [image, setImage] = useState(null);
-  const [packages, setPackages] = useState([]);
-  const [editingPackageId, setEditingPackageId] = useState(null);
+  const [oldImageURL, setOldImageURL] = useState('');  // For keeping the old image
+  const [services, setServices] = useState([]);
+  const [editingServiceId, setEditingServiceId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [isBestSeller, setIsBestSeller] = useState(false);
-  const [isHighlight, setIsHighlight] = useState(false);
   
   // New states for image modal
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -40,12 +37,12 @@ const AdminPackage = () => {
 
   const fetchData = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'package'));
-      const packagesList = querySnapshot.docs.map((doc) => ({
+      const querySnapshot = await getDocs(collection(db, 'service'));
+      const servicesList = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setPackages(packagesList);
+      setServices(servicesList);
     } catch (error) {
       console.error('Error fetching data: ', error);
     }
@@ -55,26 +52,19 @@ const AdminPackage = () => {
     fetchData();
   }, []);
 
-  const openModal = (pkg = null) => {
-    // Set states for the modal when editing or adding a new package
-    if (pkg) {
-      setName(pkg.name);
-      setDescription(pkg.description);
-      setPax(pkg.pax);
-      setPrice(pkg.price);
-      setImage(pkg.imageSrc);
-      setIsBestSeller(pkg.isBestSeller);
-      setIsHighlight(pkg.isHighlight);
-      setEditingPackageId(pkg.id);
+  const openModal = (srv = null) => {
+    // Set states for the modal when editing or adding a new service
+    if (srv) {
+      setTitle(srv.title);
+      setDescription(srv.description);
+      setOldImageURL(srv.imgelink);  // Keep the old image URL
+      setEditingServiceId(srv.id);
     } else {
-      setName('');
+      setTitle('');
       setDescription('');
-      setPax('');
-      setPrice('');
       setImage(null);
-      setIsBestSeller(false);
-      setIsHighlight(false);
-      setEditingPackageId(null);
+      setOldImageURL('');
+      setEditingServiceId(null);
     }
     setIsModalOpen(true);
     setErrorMessage('');
@@ -83,14 +73,11 @@ const AdminPackage = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     // Reset fields
-    setName('');
+    setTitle('');
     setDescription('');
-    setPax('');
-    setPrice('');
     setImage(null);
-    setIsBestSeller(false);
-    setIsHighlight(false);
-    setEditingPackageId(null);
+    setOldImageURL('');
+    setEditingServiceId(null);
     setErrorMessage('');
   };
 
@@ -114,35 +101,28 @@ const AdminPackage = () => {
     setErrorMessage('');
 
     try {
-      let imageURL = '';
+      let imageURL = oldImageURL;  // Set the imageURL to the old image by default
 
+      // If a new image is selected, handle upload
       if (image) {
         const compressedImage = await handleImageCompression(image);
-        const imageRef = ref(storage, `package_images/${compressedImage.name}`);
+        const imageRef = ref(storage, `service_images/${compressedImage.name}`);
         const snapshot = await uploadBytes(imageRef, compressedImage);
         imageURL = await getDownloadURL(snapshot.ref);
       }
 
-      if (editingPackageId) {
-        const packageRef = doc(db, 'package', editingPackageId);
-        await updateDoc(packageRef, { 
-          name, 
+      if (editingServiceId) {
+        const serviceRef = doc(db, 'service', editingServiceId);
+        await updateDoc(serviceRef, { 
+          title, 
           description, 
-          pax, 
-          price, 
-          imageSrc: imageURL, 
-          isBestSeller, 
-          isHighlight 
+          imgelink: imageURL, 
         });
       } else {
-        await addDoc(collection(db, 'package'), { 
-          name, 
+        await addDoc(collection(db, 'service'), { 
+          title, 
           description, 
-          pax, 
-          price, 
-          imageSrc: imageURL, 
-          isBestSeller, 
-          isHighlight 
+          imgelink: imageURL, 
         });
       }
       closeModal();
@@ -153,11 +133,11 @@ const AdminPackage = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this package?');
+    const confirmDelete = window.confirm('Are you sure you want to delete this service?');
     if (confirmDelete) {
       try {
-        await deleteDoc(doc(db, 'package', id));
-        alert('Package deleted successfully!');
+        await deleteDoc(doc(db, 'service', id));
+        alert('Service deleted successfully!');
         fetchData();
       } catch (error) {
         console.error('Error deleting document: ', error);
@@ -165,11 +145,11 @@ const AdminPackage = () => {
     }
   };
 
-  const handleImageClick = (pkg) => {
-    // Set active package for displaying in the dialog
-    setActive(pkg.imageSrc);
-    setActiveTitle(pkg.name);
-    setActiveDescription(pkg.description);
+  const handleImageClick = (srv) => {
+    // Set active service for displaying in the dialog
+    setActive(srv.imgelink);
+    setActiveTitle(srv.title);
+    setActiveDescription(srv.description);
     setDialogOpen(true);
   };
 
@@ -177,15 +157,15 @@ const AdminPackage = () => {
     setDialogOpen(false);
   };
 
-  const TABLE_HEAD = ["Name", "Description", "Pax", "Price", "Image", "Best Seller", "Highlight", "Actions"];
+  const TABLE_HEAD = ["Title", "Description", "Image", "Actions"];
 
   return (
     <div className='container mx-auto mt-10'>
-      {/* Modal for Adding/Editing Packages */}
+      {/* Modal for Adding/Editing Services */}
       <Dialog size="sm" open={isModalOpen} handler={closeModal} className="p-4">
         <DialogHeader className="relative m-0 block">
           <Typography variant="h4" color="blue-gray">
-            {editingPackageId ? 'Edit Service' : 'Add Service'}
+            {editingServiceId ? 'Edit Service' : 'Add Service'}
           </Typography>
           <IconButton
             size="sm"
@@ -200,14 +180,14 @@ const AdminPackage = () => {
           {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>}
           <div>
             <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
-              Name
+              Title
             </Typography>
             <Input
               color="gray"
               size="lg"
-              placeholder="eg. Package Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              placeholder="eg. Service Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           <div>
@@ -216,41 +196,24 @@ const AdminPackage = () => {
             </Typography>
             <Textarea
               rows={3}
-              placeholder="eg. Package Description"
+              placeholder="eg. Service Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-          </div>
-          <div className="flex gap-4">
-            <div className="w-full">
-              <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
-                Pax
-              </Typography>
-              <Input
-                color="gray"
-                size="lg"
-                placeholder="eg. 5"
-                value={pax}
-                onChange={(e) => setPax(e.target.value)}
-              />
-            </div>
-            <div className="w-full">
-              <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
-                Price
-              </Typography>
-              <Input
-                color="gray"
-                size="lg"
-                placeholder="eg. $100"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-            </div>
           </div>
           <div>
             <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
               Image
             </Typography>
+            {oldImageURL && (
+              <div className="mb-4">
+                <img
+                  src={oldImageURL}
+                  alt="Current Service Image"
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+              </div>
+            )}
             <input
               type="file"
               onChange={(e) => setImage(e.target.files[0])}
@@ -258,28 +221,10 @@ const AdminPackage = () => {
               accept="image/*"
             />
           </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              checked={isBestSeller}
-              onChange={(e) => setIsBestSeller(e.target.checked)}
-              className="mr-2"
-            />
-            <span>Best Seller</span>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              checked={isHighlight}
-              onChange={(e) => setIsHighlight(e.target.checked)}
-              className="mr-2"
-            />
-            <span>Highlight</span>
-          </div>
         </DialogBody>
         <DialogFooter>
           <Button className="ml-auto" onClick={handleSubmit}>
-            {editingPackageId ? 'Update Service' : 'Add Service'}
+            {editingServiceId ? 'Update Service' : 'Add Service'}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -314,7 +259,7 @@ const AdminPackage = () => {
         </DialogFooter>
       </Dialog>
 
-      {/* Table for Displaying Packages */}
+      {/* Table for Displaying Services */}
       <Card className="h-full w-full overflow-scroll">
         <div className='flex flex-auto flex-row justify-between m-10'>
           <Typography variant='h4'>Service</Typography>
@@ -337,42 +282,30 @@ const AdminPackage = () => {
             </tr>
           </thead>
           <tbody>
-            {packages.length > 0 ? (
-              packages.map((pkg) => (
-                <tr key={pkg.id} className={`even:bg-blue-gray-50/50`}>
+            {services.length > 0 ? (
+              services.map((srv) => (
+                <tr key={srv.id} className={`even:bg-blue-gray-50/50`}>
                   <td className="p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal">{pkg.name}</Typography>
+                    <Typography variant="small" color="blue-gray" className="font-normal">{srv.title}</Typography>
                   </td>
                   <td className="p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal">{pkg.description}</Typography>
+                    <Typography variant="small" color="blue-gray" className="font-normal">{srv.description}</Typography>
                   </td>
                   <td className="p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal">{pkg.pax}</Typography>
-                  </td>
-                  <td className="p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal">Rp. {pkg.price}</Typography>
-                  </td>
-                  <td className="p-4">
-                    {pkg.imageSrc && (
+                    {srv.imgelink && (
                       <img
-                        src={pkg.imageSrc}
-                        alt={pkg.name}
+                        src={srv.imgelink}
+                        alt={srv.title}
                         className="h-10 w-10 object-cover rounded-full cursor-pointer"
-                        onClick={() => handleImageClick(pkg)} // Click handler to open image dialog
+                        onClick={() => handleImageClick(srv)} // Click handler to open image dialog
                       />
                     )}
                   </td>
-                  <td className="p-4 text-center">
-                    <Typography variant="small" color="blue-gray" className="font-normal">{pkg.isBestSeller ? 'Yes' : 'No'}</Typography>
-                  </td>
-                  <td className="p-4 text-center">
-                    <Typography variant="small" color="blue-gray" className="font-normal">{pkg.isHighlight ? 'Yes' : 'No'}</Typography>
-                  </td>
                   <td className="p-4">
-                    <IconButton onClick={() => openModal(pkg)} className="mr-2">
+                    <IconButton onClick={() => openModal(srv)} className="mr-2">
                       <PencilSquareIcon color='white' width={16} height={16}/>
                     </IconButton>
-                    <IconButton color='red' onClick={() => handleDelete(pkg.id)}>
+                    <IconButton color='red' onClick={() => handleDelete(srv.id)}>
                       <TrashIcon color='white' width={16} height={16}/>
                     </IconButton>
                   </td>
@@ -380,7 +313,7 @@ const AdminPackage = () => {
               ))
             ) : (
               <tr>
-                <td className="py-2 px-4 border-b text-center" colSpan="8">No data available</td>
+                <td className="py-2 px-4 border-b text-center" colSpan="4">No data available</td>
               </tr>
             )}
           </tbody>
@@ -390,4 +323,4 @@ const AdminPackage = () => {
   );
 };
 
-export default AdminPackage;
+export default ServiceAdmin;

@@ -46,7 +46,7 @@ export default function MenuPage() {
  return (
   <>
     <Navigation/>
-    <MenuSection totalMaxData={1000} classes={" h-full pt-24"} showButton={false}/>
+    <MenuSection totalMaxData={1000} classes={" pt-24"} showButton={false}/>
     <FooterSection/>
     <ReactAudioPlayer
       ref={audioPlayerRef}
@@ -73,7 +73,8 @@ export default function MenuPage() {
     <Dialog open={open} handler={handleOpen} className="bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center z-50  overflow-y-auto max-h-[400px]">
     <DialogHeader>
         <Typography variant="h5" color="blue-gray">
-            .
+        <p>{" "}</p>
+
         </Typography>
     </DialogHeader>
     <DialogBody className="grid place-items-center gap-4">

@@ -63,7 +63,7 @@ export function ContactSection14() {
     <section 
       ref={sectionRef}
       id="contactSection"
-      className="bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center py-20 px-4"
+      className="bg-[url('/src/Assets/bg4.svg')] bg-repeat bg-center bg-[length:1800px_1068.44px]   py-20 px-4"
     >
       <div className="container mx-auto text-center max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <Zoom className="mb-10">
@@ -76,18 +76,8 @@ export function ContactSection14() {
         </Zoom>
         <div className="grid grid-cols-1 gap-x-12 gap-y-6 lg:grid-cols-2 items-start">
           <Zoom className="w-full h-full object-cover">
-            <a
-              className="w-full h-full object-cover"
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://maps.app.goo.gl/27rmihvXkqS91wkJ8"
-            >
-              <img
-                src={image}
-                alt="map"
-                className="w-full h-full object-cover lg:max-h-[510px] hover:scale-105 rounded-xl transition ease-linear"
-              />
-            </a>
+          <iframe className="rounded-lg" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3965.55538920476!2d106.6803283!3d-6.3219788!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69e57317a4c099%3A0xaeb263898d927de4!2sRestoran%20Surgana%20Rasa!5e0!3m2!1sid!2sid!4v1728713024164!5m2!1sid!2sid" width="600" height="510" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+
           </Zoom>
           <Zoom delay={200}>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">

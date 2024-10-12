@@ -56,7 +56,7 @@ const features = [
 
 export default function FeatureSection() {
   return (
-    <div className="bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center py-24">
+    <div className="bg-[url('/src/Assets/bg4.svg')] bg-repeat bg-center bg-[length:1800px_1068.44px]  py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
         <Zoom>

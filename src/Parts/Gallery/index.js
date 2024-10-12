@@ -11,40 +11,41 @@ import {
     Carousel,
 } from "@material-tailwind/react";
 
-// Helper function to fetch Instagram media using the Instagram Graph API
 const fetchInstagramMedia = async () => {
-    // const accessToken = "IGQWRPRnA1TDZAGR0FscXdPS0JNLTJSS0tVUjg2dzMwS0VBdXVra1ZA1Ujg4M25TY3JGWXNRbXYxcTcyTWxKdjZAzb1drbGptU0FvYTlUUUZAqYlRXQW03djZADSjE0aUNsYlR3R0NDMGU1WG9oa0JIbmxqZAE9WcUlETVEZD"; // Set your access token here
-    const accessToken = " "; // Set your access token here
-    const url = `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token=${accessToken}`;
+    const url = `/api/instagram`; // Point to the Express backend API
 
     try {
         const response = await fetch(url);
         const result = await response.json();
-        return result.data || [];
+        return result || [];
     } catch (error) {
-        console.error("Error fetching Instagram media:", error);
+        console.error("Error fetching Instagram media from backend:", error);
         return [];
     }
 };
 
-const GallerySection = ({ totalMaxData = 8, classes, isLink = false}) => {
+const GallerySection = ({ totalMaxData = 8, classes, isLink = false }) => {
     const [activeTab, setActiveTab] = useState('Photo');
     const [photos, setPhotos] = useState([]);
     const [videos, setVideos] = useState([]);
-    
+
     const tabList = [
         { id: '0', typeName: 'Photo' },
         { id: '1', typeName: 'Video' },
     ];
 
     useEffect(() => {
-        // Fetch Instagram media when the component mounts
         fetchInstagramMedia().then((media) => {
-            const photoItems = media.filter(item => item.media_type === 'IMAGE' || item.media_type === 'CAROUSEL_ALBUM');
-            const videoItems = media.filter(item => item.media_type === 'VIDEO');
+            // Check if media is an array
+            if (Array.isArray(media)) {
+                const photoItems = media.filter(item => item.media_type === 'IMAGE' || item.media_type === 'CAROUSEL_ALBUM');
+                const videoItems = media.filter(item => item.media_type === 'VIDEO');
 
-            setPhotos(photoItems);
-            setVideos(videoItems);
+                setPhotos(photoItems);
+                setVideos(videoItems);
+            } else {
+                console.error("Media is not an array:", media);
+            }
         });
     }, []);
 
@@ -53,30 +54,30 @@ const GallerySection = ({ totalMaxData = 8, classes, isLink = false}) => {
 
     return (
         <section id="GallerySection" ref={sectionRef}>
-            <div className={`bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center` + classes}>
+            <div className={`bg-[url('/src/Assets/bg4.svg')] bg-repeat bg-center bg-[length:1800px_1068.44px]  ` + classes}
+            >
                 <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                     <Zoom>
-                     <TitleComponent
-                       classes="text-mainyellow-900"
-                       title="Gallery Instagram"
-                       description="Lihat koleksi momen spesial dan inspirasi terbaru dari Instagram kami!"
-                       descClass="text-white"
-                     />
+                        <TitleComponent
+                            classes="text-mainyellow-900"
+                            title="Gallery Instagram"
+                            description="Lihat koleksi momen spesial dan inspirasi terbaru dari Instagram kami!"
+                            descClass="text-white"
+                        />
                     </Zoom>
                     {isLink &&
                         <Carousel className="rounded-xl max-h-[400px]" autoplay={true} loop={true}>
                             {photos.slice(0, totalMaxData).map((photo, index) => (
-                                                    
                                 <img
+                                    key={photo.id}
                                     src={photo.media_url}
                                     alt="image 1"
                                     className="max-h-[400px] w-full object-contain"
                                 />
                             ))}
                         </Carousel>
-
                     }
-                    
+
                     <Tabs value={activeTab}>
                         <div className="overflow-x-auto mt-8">
                             <TabsHeader
@@ -145,17 +146,16 @@ const GallerySection = ({ totalMaxData = 8, classes, isLink = false}) => {
                             ))}
                         </TabsBody>
                     </Tabs>
-                    
+
                     <div className="mx-auto max-w-96 mt-20">
-                     <a
-                       href={!isLink? `gallery`: `https://www.instagram.com/surganarasarestaurant/`}
-                       // target="_blank"
-                       style={{ borderRadius: "14px 4px 14px 4px" }}
-                       className="w-full bg-mainyellow-900/70 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                       type="button"
-                     >
-                       {!isLink? `Lihat gallery`: `Kunjungi Instagram Kami`}
-                     </a>
+                        <a
+                            href={!isLink ? `gallery` : `https://www.instagram.com/surganarasarestaurant/`}
+                            style={{ borderRadius: "14px 4px 14px 4px" }}
+                            className="w-full bg-mainyellow-900/70 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            type="button"
+                        >
+                            {!isLink ? `Lihat gallery` : `Kunjungi Instagram Kami`}
+                        </a>
                     </div>
                 </div>
             </div>

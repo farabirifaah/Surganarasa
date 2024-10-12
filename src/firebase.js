@@ -4,26 +4,15 @@ import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
-
-// const firebaseConfig = {
-//  apiKey: "AIzaSyAy0qo08fR-7S3P93Uw7gzs1iKR6ns6Occ",
-//  authDomain: "surganarasa-36192.firebaseapp.com",
-//  projectId: "surganarasa-36192",
-//  storageBucket: "surganarasa-36192.appspot.com",
-//  messagingSenderId: "537796076596",
-//  appId: "1:537796076596:web:5cab02fa75065279155661",
-//  measurementId: "G-TTCQYR0NNR"
-// };
-
- //live production
+// Use environment variables for Firebase config
 const firebaseConfig = {
- apiKey: "AIzaSyC8D58uiFSAaj8oj0Sdhjdqd2AP5zyrSeo",
- authDomain: "surganarasa-6464d.firebaseapp.com",
- projectId: "surganarasa-6464d",
- storageBucket: "surganarasa-6464d.appspot.com",
- messagingSenderId: "525337089139",
- appId: "1:525337089139:web:ce2ebe235028d85261c606",
- measurementId: "G-HFKDS0GHC8"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);

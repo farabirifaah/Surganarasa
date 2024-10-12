@@ -224,6 +224,7 @@ export default function PackageOtherSection({showButton = true, maxData = 4}) {
         handler={handleDialogClose}
       >
         <DialogHeader className="justify-between">
+        <p>{" "}</p>
          
         </DialogHeader>
         <DialogBody className="overflow-y-auto max-h-[550px]">

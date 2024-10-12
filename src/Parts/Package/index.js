@@ -77,7 +77,7 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
         <div
           ref={sectionRef}
           id="packageSection"
-          className="py-24 bg-[url('/src/Assets/main-bg-hp.svg')] sm:bg-[url('/src/Assets/main-bg-hp-md.svg')] lg:bg-[url('/src/Assets/main-bg-hp-md.svg')] xl:bg-[url('/src/Assets/main-bg.svg')] bg-no-repeat w-full bg-cover bg-center"
+          className="py-24 bg-[url('/src/Assets/main-bg-hp.svg')] sm:bg-[url('/src/Assets/main-bg-hp-md.svg')] lg:bg-[url('/src/Assets/main-bg-hp-md.svg')] xl:bg-[url('/src/Assets/main-bg.svg')] bg-no-repeat bg-cover bg-center "
           style={{
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -224,6 +224,7 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
         handler={handleDialogClose}
       >
         <DialogHeader className="justify-between">
+        <p>{" "}</p>
          
         </DialogHeader>
         <DialogBody className="overflow-y-auto max-h-[550px]">

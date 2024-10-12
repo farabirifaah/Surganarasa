@@ -50,7 +50,7 @@ export default function LandingPage() {
   
 
   useEffect(() => {
-    document.title = "Surganarasa"; // Set page title
+    // document.title = "Surganarasa"; // Set page title
     setOpen(true); // Open the dialog on page load
   }, []);
 
@@ -85,7 +85,6 @@ export default function LandingPage() {
       <FooterSection />
 
       {/* Scroll Position Debug */}
-      <Typography>{isScrolled ? "Scrolled > 1080px" : "Not Scrolled"}</Typography>
 
       {/* Audio Player */}
       <ReactAudioPlayer
@@ -133,7 +132,7 @@ export default function LandingPage() {
       >
         <DialogHeader>
           <Typography variant="h5" color="blue-gray">
-            .
+            {" "}
           </Typography>
         </DialogHeader>
         <DialogBody className="grid place-items-center gap-6 px-10 overflow-y-auto max-h-[500px]">

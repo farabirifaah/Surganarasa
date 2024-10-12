@@ -102,8 +102,14 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
     const sectionRef = useRef(null);
 
     return (
-        <section id="menuSection" ref={sectionRef}>
-            <div className={`bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center` + classes}>
+        <section id="menuSection" 
+            ref={sectionRef} 
+            className={`bg-[url('/src/Assets/bg4.svg')] bg-repeat bg-center bg-[length:1800px_1068.44px]  ` + classes}
+
+
+
+        >
+            <div className="w-full h-full">
                 <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                     <Zoom>
                         <TitleComponent
@@ -224,7 +230,7 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                     {
                         showButton && (
                             <Zoom delay={500}>
-                                <div className="mx-auto max-w-96 mt-20 flex">
+                                <div className="mx-auto max-w-96 mt-20 flex \ flex-col md:flex-row gap-2">
                                     <button
                                         style={{ borderRadius: "14px 4px 14px 4px" }}
                                         className="w-full bg-mainyellow-900/70 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -235,7 +241,7 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                                     </button>
                                     <button
                                         style={{ borderRadius: "14px 4px 14px 4px" }}
-                                        className="w-full ml-2 bg-maingreen-900 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-mainyellow-900 rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                        className="w-full bg-maingreen-900 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-mainyellow-900 rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                         type="button"
                                         onClick={() => window.open("https://firebasestorage.googleapis.com/v0/b/surganarasa-36192.appspot.com/o/Surgana%20Rasa-Menu-v5-rev_7-7%20(1)_compressed.pdf?alt=media&token=968dfbce-59ab-42c8-a543-855de4e4a603", "_blank")}
                                     >

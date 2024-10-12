@@ -216,6 +216,8 @@ const AdminVenue = () => {
       {/* Image Dialog */}
       <Dialog size="lg" className="bg-white" open={dialogOpen} handler={handleDialogClose}>
         <DialogHeader className="justify-between">
+        <p>{" "}</p>
+
         </DialogHeader>
         <DialogBody>
           <Zoom>
