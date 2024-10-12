@@ -74,7 +74,6 @@ export default function MenuPage() {
     <DialogHeader>
         <Typography variant="h5" color="blue-gray">
         <p>{" "}</p>
-
         </Typography>
     </DialogHeader>
     <DialogBody className="grid place-items-center gap-4">

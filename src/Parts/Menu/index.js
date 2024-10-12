@@ -257,7 +257,7 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                 </div>
             </div>
 
-            <Dialog size="lg" className="bg-[url('/src/Assets/bg4.svg')]  overflow-y-auto max-h-dvh" open={dialogOpen} handler={handleDialogClose}>
+            <Dialog size="xl" className="bg-[url('/src/Assets/bg4.svg')]  overflow-y-auto max-h-dvh" open={dialogOpen} handler={handleDialogClose}>
                 <DialogHeader className="justify-between">
                     <Typography variant="h6" className="w-full font-semibold"
                         style={{ fontFamily: "David Libre", fontSize: 26, color: "#FFBB00", textAlign: "center" }}>

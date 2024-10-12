@@ -8,8 +8,7 @@ app.use(cors()); // Enable CORS for all routes
 
 app.get('/api/instagram', async (req, res) => {
     const accessToken = process.env.INSTAGRAM_TOKEN; // Ensure this is set in your .env file
-    const url = `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink`;
-    console.log(`accessToken : ${accessToken}`)
+    const url = `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&limit=100`;
     try {
         // Set the Authorization header to use Bearer token
         const response = await fetch(url, {
@@ -26,7 +25,7 @@ app.get('/api/instagram', async (req, res) => {
 
         // Check if the response has an error
         if (response.ok) { // Check if the response status is OK (2xx)
-            return res.json(result.data || []); // Return the data or an empty array if no data
+            return res.json(result || []); // Return the data or an empty array if no data
         } else {
             console.error('Error from Instagram API:', result.error);
             return res.status(response.status).json({ error: result.error.message || 'Unknown error occurred' });

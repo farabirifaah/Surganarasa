@@ -196,7 +196,7 @@ export default function Navigation() {
 
 
 
-    <DialogMT open={open} handler={handleOpen} className="bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center z-50  overflow-y-auto max-h-[400px]">
+    <DialogMT open={open} size="xl" handler={handleOpen} className="bg-[url('/src/Assets/bg4.svg')] bg-cover bg-center z-50  overflow-y-auto">
     <DialogHeader>
         <Typography variant="h5" color="blue-gray">
             .

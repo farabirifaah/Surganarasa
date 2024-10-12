@@ -191,7 +191,7 @@ const AdminPackage = () => {
   return (
     <div className='container mx-auto mt-10'>
       {/* Modal */}
-      <Dialog size="sm" open={isModalOpen} handler={closeModal} className="p-4">
+      <Dialog size="sm" open={isModalOpen} handler={closeModal} className="p-4 max-h-screen overflow-y-auto">
         <DialogHeader className="relative m-0 block">
           <Typography variant="h4" color="blue-gray">
             {editingPackageId ? 'Edit Package' : 'Add Package'}
