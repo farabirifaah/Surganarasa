@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import { Button, Input, Textarea, Typography } from "@material-tailwind/react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase"; // Import your Firebase setup
-import image from '../../Assets/map.svg';
 import TitleComponent from "../../Components/title";
 import { Zoom } from "react-awesome-reveal";
 
@@ -76,7 +75,7 @@ export function ContactSection14() {
         </Zoom>
         <div className="grid grid-cols-1 gap-x-12 gap-y-6 lg:grid-cols-2 items-start">
           <Zoom className="w-full h-full object-cover">
-          <iframe className="rounded-lg" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3965.55538920476!2d106.6803283!3d-6.3219788!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69e57317a4c099%3A0xaeb263898d927de4!2sRestoran%20Surgana%20Rasa!5e0!3m2!1sid!2sid!4v1728713024164!5m2!1sid!2sid" width="600" height="510" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+          <iframe className="rounded-lg w-full h-full min-h-[500px]" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3965.55538920476!2d106.6803283!3d-6.3219788!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69e57317a4c099%3A0xaeb263898d927de4!2sRestoran%20Surgana%20Rasa!5e0!3m2!1sid!2sid!4v1728713024164!5m2!1sid!2sid" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
 
           </Zoom>
           <Zoom delay={200}>

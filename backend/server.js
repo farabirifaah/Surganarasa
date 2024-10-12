@@ -22,7 +22,7 @@ app.get('/api/instagram', async (req, res) => {
         const result = await response.json();
 
         // Log the full response for debugging
-        console.log('Fetched data from Instagram API:', result);
+        // console.log('Fetched data from Instagram API:', result);
 
         // Check if the response has an error
         if (response.ok) { // Check if the response status is OK (2xx)
