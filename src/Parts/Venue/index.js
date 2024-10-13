@@ -58,6 +58,16 @@ export default function VenueSection() {
     setDialogOpen(false);
   };
 
+  const formatList = (text) => {
+    return text.split('\n').map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+  };
+
+
   return (
     <Fade>
       <section
@@ -83,7 +93,7 @@ export default function VenueSection() {
                   <Zoom>
                     <img
                       id="image"
-                      className="h-lvh lg:h-auto w-full max-w-full cursor-pointer max-h-[400px] rounded-lg object-cover object-center md:h-[480px]"
+                      className="h-lvh lg:h-auto w-full max-w-full cursor-pointer max-h-[500px] rounded-lg object-cover object-center md:h-[500px]"
                       src={active}
                       alt=""
                       onClick={() => setDialogOpen(true)} // Open dialog when the active image is clicked
@@ -134,7 +144,7 @@ export default function VenueSection() {
                           </Typography>
                         </div>
                         <Typography className="mt-5 font-normal text-white text-sm">
-                          {activeDescription}
+                          {formatList(activeDescription)}
                         </Typography>
                       </CardBody>
                       <CardFooter className="pt-0 mt-auto">
@@ -150,7 +160,7 @@ export default function VenueSection() {
       </section>
 
       {/* Dialog for displaying the active image */}
-      <Dialog size="lg" className="bg-[url('/src/Assets/bg4.svg')]" open={dialogOpen} handler={handleDialogClose}>
+      <Dialog size="lg" className="bg-[url('/src/Assets/bg4.svg')] p-6 overflow-y-auto max-h-svh " open={dialogOpen} handler={handleDialogClose}>
         <DialogHeader className="justify-between">
           <Typography variant="h6" className="w-full font-semibold"
             style={{ fontFamily: "David Libre", fontSize: 26, color: "#FFBB00", textAlign: "center" }}>

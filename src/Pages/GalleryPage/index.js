@@ -34,18 +34,6 @@ export default function GalleryPage() {
 
   const handleOpen = () => setOpen(!open);
 
-  // Callback function to play audio
-  const handlePlay = () => {
-   if (audioPlayerRef.current) {
-    if (isPlaying) {
-      audioPlayerRef.current.audioEl.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioPlayerRef.current.audioEl.current.play();
-      setIsPlaying(true);
-    }
-  }
-  };
 
  return (
   <>
@@ -53,25 +41,6 @@ export default function GalleryPage() {
     <GallerySection totalMaxData={1000} classes={"h-full pt-24"} isLink={true}/>
     <VenueSection/>
     <FooterSection/>
-    <ReactAudioPlayer
-      ref={audioPlayerRef}
-      src={music}
-      volume={1}
-      controls={false}
-      autoPlay
-    />
-    <div className="fixed bottom-4 right-4 z-40">
-      <Button
-        onClick={handlePlay}
-        className="bg-mainyellow-900 text-white rounded-full p-2" // Add padding for better touch target
-      >
-        {isPlaying ? (
-          <PauseIcon width={25} height={25} />
-        ) : (
-          <PlayIcon width={25} height={25} />
-        )}
-      </Button>
-    </div>
 
     
 

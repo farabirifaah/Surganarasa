@@ -157,7 +157,7 @@ const ServiceAdmin = () => {
     setDialogOpen(false);
   };
 
-  const TABLE_HEAD = ["Title", "Description", "Image", "Actions"];
+  const TABLE_HEAD = [ "Image", "Title", "Description", "Actions"];
 
   return (
     <div className='container mx-auto mt-10'>
@@ -285,21 +285,21 @@ const ServiceAdmin = () => {
             {services.length > 0 ? (
               services.map((srv) => (
                 <tr key={srv.id} className={`even:bg-blue-gray-50/50`}>
+                   <td className="p-4">
+                    {srv.imgelink && (
+                      <img
+                        src={srv.imgelink}
+                        alt={srv.title}
+                         className="h-16 w-16 rounded-md cursor-pointer object-cover"
+                        onClick={() => handleImageClick(srv)} // Click handler to open image dialog
+                      />
+                    )}
+                  </td>
                   <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-normal">{srv.title}</Typography>
                   </td>
                   <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-normal">{srv.description}</Typography>
-                  </td>
-                  <td className="p-4">
-                    {srv.imgelink && (
-                      <img
-                        src={srv.imgelink}
-                        alt={srv.title}
-                        className="h-10 w-10 object-cover rounded-full cursor-pointer"
-                        onClick={() => handleImageClick(srv)} // Click handler to open image dialog
-                      />
-                    )}
                   </td>
                   <td className="p-4">
                     <IconButton onClick={() => openModal(srv)} className="mr-2">

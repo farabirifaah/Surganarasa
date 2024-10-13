@@ -49,7 +49,7 @@ export default function ServiceSection() {
               {collections.map((collection, index) => (
                 <Zoom delay={index * 300} key={collection.id}>
                   <div className="group relative">
-                    <div className="relative w-full h-80 xl:h-64 bg-white rounded-lg overflow-hidden group-hover:opacity-75 sm:aspect-w-1 sm:aspect-h-1 lg:aspect-w-1 lg:aspect-h-1">
+                    <div className="relative w-full h-80 xl:h-64 bg-white rounded-lg overflow-hidden  sm:aspect-w-1 sm:aspect-h-1 lg:aspect-w-1 lg:aspect-h-1">
                       <img
                         src={collection.imgelink} // Update this based on your data structure
                         alt={collection.imageAlt}

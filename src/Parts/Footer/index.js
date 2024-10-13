@@ -17,7 +17,7 @@ const LINKS = [
     items: [
       // { name: "About us", href: "/company/about" },
       { name: "Contact", href: "/contact" },
-      { name: "Investor", href: "/investor" },
+      // { name: "Investor", href: "/investor" },
     ],
   },
   {

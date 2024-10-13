@@ -53,7 +53,6 @@ export default function MenuPage() {
       src={music}
       volume={1}
       controls={false}
-      autoPlay
     />
     <div className="fixed bottom-4 right-4 z-40">
       <Button
@@ -89,7 +88,6 @@ export default function MenuPage() {
     </DialogBody>
     <DialogFooter className="space-x-2">
         <Button variant="text" color="white" onClick={() => {
-            handlePlay();
             setOpen(false);
         }}>
             Close
@@ -99,7 +97,6 @@ export default function MenuPage() {
             className="w-36 font-bold bg-mainyellow-900/80 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" 
             type="button"
             onClick={() => {
-                handlePlay();
                 setOpen(false);
             }}
         >

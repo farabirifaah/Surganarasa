@@ -56,7 +56,6 @@ export default function PackagePage() {
       src={music}
       volume={1}
       controls={false}
-      autoPlay
     />
     <div className="fixed bottom-4 right-4 z-40">
       <Button

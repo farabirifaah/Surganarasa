@@ -63,6 +63,18 @@ const dataMenu = [
        icon: <HandRaisedIcon strokeWidth={3} className="h-4 w-5" />,
       },
       {
+        id: 25,
+        title: "Feature",
+        link: "/admin/feature",
+        icon: <HandRaisedIcon strokeWidth={3} className="h-4 w-5" />,
+       },
+       {
+        id: 26,
+        title: "Gallery",
+        link: "/admin/gallery",
+        icon: <HandRaisedIcon strokeWidth={3} className="h-4 w-5" />,
+       },
+      {
         id: 21,
         title: "Package",
         link: "/admin/package",

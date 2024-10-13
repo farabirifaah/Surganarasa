@@ -27,6 +27,8 @@ const HeroService = () => {
   const [editingServiceId, setEditingServiceId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [oldImage, setOldImage] = useState(null);
+
   
   // New states for image modal
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -56,7 +58,8 @@ const HeroService = () => {
     if (service) {
       setTitle(service.title);
       setDescription(service.description);
-      setImage(service.imgelink);
+      setImage(null);
+      setOldImage(service.imgelink);
       setEditingServiceId(service.id);
       setIsFirstSlide(service.isFirstSlide || false); // Set the isFirstSlide state
     } else {
@@ -100,7 +103,7 @@ const HeroService = () => {
     setErrorMessage('');
 
     try {
-      let imageURL = '';
+      let imageURL = oldImage;
 
       if (image) {
         const compressedImage = await handleImageCompression(image);
@@ -156,7 +159,7 @@ const HeroService = () => {
     setDialogOpen(false);
   };
 
-  const TABLE_HEAD = ["Title", "Description", "Image", "Is First Slide", "Actions"];
+  const TABLE_HEAD = ["Image", "Title", "Description", "Is First Slide", "Actions"];
 
   return (
     <div className='container mx-auto mt-10'>
@@ -209,6 +212,11 @@ const HeroService = () => {
               onChange={(e) => setImage(e.target.files[0])}
               className="block w-full text-gray-600"
               accept="image/*"
+            />
+            <img
+              className="h-64 mt-2 w-64 rounded-lg object-cover object-center"
+              src={oldImage}
+              alt={activeTitle}
             />
           </div>
           <div>
@@ -291,6 +299,16 @@ const HeroService = () => {
               services.map((service) => (
                 <tr key={service.id} className={`even:bg-blue-gray-50/50`}>
                   <td className="p-4">
+                    {service.imgelink && (
+                      <img
+                        src={service.imgelink}
+                        alt={service.title}
+                         className="h-16 w-16 rounded-md cursor-pointer object-cover"
+                        onClick={() => handleImageClick(service)} 
+                      />
+                    )}
+                  </td>
+                  <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-normal">
                       {service.title}
                     </Typography>
@@ -299,16 +317,6 @@ const HeroService = () => {
                     <Typography variant="small" color="blue-gray" className="font-normal">
                       {service.description}
                     </Typography>
-                  </td>
-                  <td className="p-4">
-                    {service.imgelink && (
-                      <img
-                        src={service.imgelink}
-                        alt={service.title}
-                        className="h-10 w-10 object-cover rounded-full cursor-pointer"
-                        onClick={() => handleImageClick(service)} 
-                      />
-                    )}
                   </td>
                   <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-normal">

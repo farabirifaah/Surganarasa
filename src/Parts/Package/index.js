@@ -20,10 +20,12 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
   const [highlightedProducts, setHighlightedProducts] = useState([]); // State to hold highlighted products
   const [dialogOpen, setDialogOpen] = useState(false); // State for controlling dialog visibility
   const [active, setActive] = useState(""); // State for the active image in dialog
+  const [activeVideoUrl, setActiveVideoUrl] = useState(""); // State for the active image in dialog
   const [activeTitle, setActiveTitle] = useState(""); // State for the active title in dialog
   const [activeDescription, setActiveDescription] = useState(""); // State for the active description in dialog
   const [activePrice, setActivePrice] = useState(""); // State for the active description in dialog
   const [activePax, setActivePax] = useState(""); // State for the active description in dialog
+  const [hasVideo, setHasVideo] = useState(false); // State for the active description in dialog
 
   // Function to fetch 4 highlighted products from Firestore
   const fetchHighlightedProducts = async () => {
@@ -47,23 +49,29 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
   };
 
   const formatAmount = (amount) => {
-    return `${parseFloat(amount)
-      .toFixed(2)
-      .replace(/\d(?=(\d{3})+\.)/g, "$&,")}`;
+    return `${Math.round(amount)
+      .toString()
+      .replace(/\d(?=(\d{3})+$)/g, "$&,")}`;
   };
 
   // Function to handle dialog open and pass product details
-  const handleDialogOpen = (image, title, description, price, pax) => {
+  const handleDialogOpen = (image, title, description, price, pax, videoUrl) => {
+    // console.log(videoUrl);
     setActive(image);
+    setActiveVideoUrl(videoUrl);
+    setHasVideo(videoUrl ? true : false);
     setActiveTitle(title);
     setActiveDescription(description);
     setActivePrice(price);
+    setActivePax(pax);
     setActivePax(pax);
     setDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+    setActiveVideoUrl("");
+
   };
 
   // Fetch products on component mount
@@ -71,13 +79,22 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
     fetchHighlightedProducts();
   }, []);
 
+  const formatList = (text) => {
+    return text.split('\n').map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+  };
+
   return (
     <>
       <Fade>
         <div
           ref={sectionRef}
           id="packageSection"
-          className="py-24 bg-[url('/src/Assets/main-bg-hp.svg')] sm:bg-[url('/src/Assets/main-bg-hp-md.svg')] lg:bg-[url('/src/Assets/main-bg-hp-md.svg')] xl:bg-[url('/src/Assets/main-bg.svg')] bg-no-repeat bg-cover bg-center "
+          className="py-24 bg-[url('/src/Assets/main-bg-hp.svg')] sm:bg-[url('/src/Assets/main-bg-hp-md.svg')] lg:bg-[url('/src/Assets/main-bg-hp-md.svg')] xl:bg-[url('/src/Assets/main-bg-new.svg')] bg-no-repeat bg-cover bg-center "
           style={{
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -103,7 +120,7 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
                   >
                     {product.isBestSeller && (
                       <span className="z-50 absolute top-0.5 right-0.5 grid min-h-[30px] min-w-[140px] -translate-y-2/4 place-items-center rounded-lg bg-pink-400 py-1 px-1 text-xs text-white">
-                        best seller
+                        Best Seller
                       </span>
                     )}
                     <CardHeader
@@ -128,7 +145,8 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
                             product.name,
                             product.description,
                             product.price,
-                            product.pax
+                            product.pax,
+                            product.videoUrl  
                           )
                         }
                       />
@@ -136,7 +154,7 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
 
                     {/* Flex container to push the button to the bottom */}
                     <div className="flex flex-col min-h-72 overflow-auto">
-                      <CardBody className="flex-grow">
+                      <CardBody className="flex-grow min-h-[260px]">
                         <div className="mb-3 flex items-center justify-between w-full text-center">
                           <Typography
                             className="w-full font-semibold"
@@ -147,13 +165,14 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
                               textAlign: "center",
                             }}
                           >
-                            {product.name}
+                            {formatList(product.name)}
+
                           </Typography>
                         </div>
                         <Typography className="font-normal text-white size text-xs mb-2">
                           Mulai dari
                         </Typography>
-                        <div className="flex flex-row content-between justify-between">
+                        <div className="flex flex-row md:content-between md:justify-between ">
                           <Typography
                             className="w-full font-semibold"
                             style={{
@@ -163,14 +182,21 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
                               textAlign: "left",
                             }}
                           >
-                            Rp. {formatAmount(product.price)}
+                            Rp. {formatAmount(product.price)},- 
                           </Typography>
                           <Typography className="font-normal text-white size text-xs w-32 text-right origin-bottom-right pt-2">
-                            / {product.pax} pax
+                            / {product.pax == "1" ? '' : product.pax} pax
                           </Typography>
                         </div>
-                        <Typography className="mt-5 font-normal text-white size text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                          {product.description}
+                        <Typography
+                          className="mt-5 font-normal text-white text-xs overflow-hidden"
+                          style={{
+                            display: '-webkit-box',
+                            WebkitBoxOrient: 'vertical',
+                            WebkitLineClamp: 3,
+                          }}
+                        >
+                          {formatList(product.description)}
                         </Typography>
                       </CardBody>
 
@@ -186,7 +212,8 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
                               product.name,
                               product.description,
                               product.price,
-                              product.pax
+                              product.pax,
+                              product.videoUrl  
                             )
                           }
                         >
@@ -218,8 +245,8 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
 
       {/* Dialog component */}
       <Dialog
-        size="md"
-        className="bg-[url('/src/Assets/bg4.svg')]"
+        size="lg"
+        className="bg-[url('/src/Assets/bg4.svg')] p-6 overflow-y-auto max-h-screen mt-10"
         open={dialogOpen}
         handler={handleDialogClose}
       >
@@ -227,17 +254,27 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
         <p>{" "}</p>
          
         </DialogHeader>
-        <DialogBody className="overflow-y-auto max-h-[550px]">
-          <Zoom>
-            <a href={active} target="_blank" rel="noopener noreferrer">
-              <img
-                className="h-64 lg:h-96 xl:h-96 md:h-auto sm:h-auto w-full rounded-lg object-cover object-center"
-                src={active}
-                alt={activeTitle}
-                style={{ maxHeight: 650 }}
-              />
-            </a>
-          </Zoom>
+        <DialogBody className="">
+        <div className={`grid gap-4 ${hasVideo ? 'lg:grid-cols-2 md:grid-cols-1' : 'grid-cols-1'}`}>
+          <a href={active} target="_blank" rel="noopener noreferrer">
+            <img
+              className={`h-64 max-h-[275px] lg:h-96 xl:h-96 ${hasVideo ? 'w-full' : 'mx-auto'} md:h-auto sm:h-auto w-full rounded-lg object-cover object-center`}
+              src={active}
+              alt={activeTitle}
+            />
+          </a>
+          {activeVideoUrl && (
+             <video
+             className="w-full h-full md:max-h-[275px] lg:h-96 xl:h-96 rounded-lg object-cover object-center"
+             controls
+             autoPlay
+           >
+             <source src={activeVideoUrl} type="video/mp4" />
+             Your browser does not support the video tag.
+           </video>
+          )}
+        </div>
+
           <Typography
             variant="h6"
             className="w-full font-semibold mt-5"
@@ -260,14 +297,15 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
                 textAlign: "left",
               }}
             >
-              Rp. {formatAmount(activePrice)}
+              Rp. {formatAmount(activePrice)},-
             </Typography>
             <Typography className="font-normal text-white size text-xs w-32 text-right origin-bottom-right pt-2">
-              / {activePax} pax
+              / {activePax == "1" ? '' : activePax} pax
             </Typography>
           </div>
           <Typography className="mt-5 font-normal text-white text-sm leading-6">
-            {activeDescription}
+          {formatList(activeDescription)}
+            {/* {activeDescription} */}
           </Typography>
         </DialogBody>
         <DialogFooter className="wrap text-wrap">

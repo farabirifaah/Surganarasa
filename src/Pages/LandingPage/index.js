@@ -37,7 +37,7 @@ export default function LandingPage() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY; // Get current scroll position
       setIsScrolled(currentScrollY > 1080); // Set isScrolled based on scroll position
-      console.log(`Current scroll position: ${currentScrollY}`); // Log scroll position
+      // console.log(`Current scroll position: ${currentScrollY}`); // Log scroll position
     };
   
     window.addEventListener('scroll', handleScroll); // Add scroll event listener
@@ -79,8 +79,8 @@ export default function LandingPage() {
       <PackageSection />
       <PackageOtherSection />
       <VenueSection />
-      <MenuSection />
       <InstagramFeed />
+      <MenuSection />
       <ContactSection />
       <FooterSection />
 
@@ -92,7 +92,6 @@ export default function LandingPage() {
         src={music}
         volume={1}
         controls={false}
-        autoPlay
       />
 
       {/* Audio Control and Instagram Button */}
@@ -100,6 +99,8 @@ export default function LandingPage() {
         <a
           href="https://www.instagram.com/surganarasarestaurant/"
           className="bg-pink-300 text-white rounded-full p-2 max-w-10"
+          target="_blank"
+
         >
           <svg
             className="h-full w-full"
@@ -114,6 +115,21 @@ export default function LandingPage() {
             />
           </svg>
         </a>
+
+        <a
+          href="https://web.facebook.com/p/Surgana-Rasa-100084251025420/?_rdc=1&_rdr"
+          className="bg-blue-800 text-white rounded-full p-2 max-w-10"
+          target="_blank"
+        >
+          <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fillRule="evenodd"
+                  d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                  clipRule="evenodd"
+                />
+              </svg>
+        </a>
+
 
         <Button
           onClick={handlePlay}
@@ -169,13 +185,6 @@ export default function LandingPage() {
             Surgana Rasa
           </Typography>
 
-
-
-
-
-
-
-
         </DialogBody>
         <DialogFooter className="space-x-2">
           <Button variant="text" color="white" onClick={handleOpen}>
@@ -186,7 +195,7 @@ export default function LandingPage() {
             className="w-36 font-bold bg-mainyellow-900/80 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
             type="button"
             onClick={() => {
-              handlePlay();
+              // handlePlay();
               setOpen(false);
             }}
           >

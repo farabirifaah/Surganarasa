@@ -12,7 +12,9 @@ import {
 } from "@material-tailwind/react";
 
 // Function to fetch Instagram media with optional pagination
-const fetchInstagramMedia = async (nextUrl = `/api/instagram`) => {
+
+
+const fetchInstagramMedia = async (nextUrl = `https://surganarasa.com/instagram_api.php`) => {
     try {
         const response = await fetch(nextUrl);
         const result = await response.json();
@@ -23,8 +25,9 @@ const fetchInstagramMedia = async (nextUrl = `/api/instagram`) => {
     }
 };
 
+
 const GallerySection = ({ totalMaxData = 8, classes = "", isLink = false }) => {
-    const [activeTab, setActiveTab] = useState('Photo');
+    const [activeTab, setActiveTab] = useState('Video');
     const [photos, setPhotos] = useState([]);
     const [videos, setVideos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -59,7 +62,7 @@ const GallerySection = ({ totalMaxData = 8, classes = "", isLink = false }) => {
     const loadMoreMedia = () => {
         if (!nextPage) return;
 
-        console.log(nextPage);
+        // console.log(nextPage);
 
         setIsLoadingMore(true);  // Show loading while fetching more data
 
@@ -90,14 +93,7 @@ const GallerySection = ({ totalMaxData = 8, classes = "", isLink = false }) => {
         <section id="GallerySection" ref={sectionRef}>
             <div className={`bg-[url('/src/Assets/bg4.svg')] bg-repeat bg-center bg-[length:1800px_1068.44px] ` + classes}>
                 <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-                    <Zoom>
-                        <TitleComponent
-                            classes="text-mainyellow-900"
-                            title="Gallery Instagram"
-                            description="Lihat koleksi momen spesial dan inspirasi terbaru dari Instagram kami!"
-                            descClass="text-white"
-                        />
-                    </Zoom>
+                   
 {/* 
                     {isLink && photos.length > 0 && (
                         <Carousel className="rounded-xl max-h-[400px]" autoplay={true} loop={true}>
@@ -111,7 +107,42 @@ const GallerySection = ({ totalMaxData = 8, classes = "", isLink = false }) => {
                             ))}
                         </Carousel>
                     )} */}
+                    <Zoom>
+                        <TitleComponent
+                            classes="text-mainyellow-900"
+                            title="Vibes"
+                            description="Lihat suasana dan ambience spesial Surgana Rasa!"
+                            descClass="text-white mb-5"
+                        />
+                    </Zoom>
+                    <Zoom>
+                        <iframe  
+                            className="mx-auto w-full h-[270px] md:h-[680px]"
+                            src="https://www.youtube.com/embed/JuUa2HIhFtc?si=Wzi3-5692W6AU1Is&amp;start=238" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>               
+                        <div className="flex mb-10">
+                            <p className="text-sm text-mainyellow-900">Source Video : </p>
+                            <a target="_blank" href="https://www.youtube.com/watch?v=JuUa2HIhFtc"  
+                                className=" text-sm ml-1 text-white hover:underline" 
+                            > 
+                                @CzsDiary
+                            </a>
+                        </div>
+                    </Zoom>
 
+                    
+ {/* <video className="h-full w-full rounded-lg" controls autoPlay>
+                        
+                        <source src="https://www.youtube.com/watch?v=JuUa2HIhFtc" type="video/mp4" />
+                        Your browser does not support the video tag.
+                        </video> */}
+                        <Zoom>
+                        <TitleComponent
+                            classes="text-mainyellow-900"
+                            title="Gallery Instagram"
+                            description="Lihat koleksi momen spesial dan inspirasi terbaru dari Instagram kami!"
+                            descClass="text-white"
+                        />
+                    </Zoom>
                     <Tabs value={activeTab}>
                         <div className="overflow-x-auto mt-8">
                             <TabsHeader
@@ -142,25 +173,9 @@ const GallerySection = ({ totalMaxData = 8, classes = "", isLink = false }) => {
                                 <TabPanel key={id} value={typeName}>
                                     {loading ? (
                                         <p>Loading...</p>
-                                    ) : typeName === 'Photo' && photos.length > 0 ? (
-                                        <div className="mt-6 grid grid-cols-1 gap-x-2 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
-                                            {photos.slice(0, totalMaxData).map((photo, index) => (
-                                                <Zoom key={photo.id} delay={index * 50}>
-                                                    <div className="group relative cursor-pointer">
-                                                        <div className="h-72 w-72 overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 group-hover:scale-105 transition ease-in-out ">
-                                                            <img
-                                                                alt={photo.caption || 'Instagram Photo'}
-                                                                src={photo.media_url}
-                                                                className="h-full w-full object-cover object-center "
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </Zoom>
-                                            ))}
-                                        </div>
                                     ) : typeName === 'Video' && videos.length > 0 ? (
-                                        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-                                            {videos.slice(0, totalMaxData).map((video, index) => (
+                                        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                                            {videos.slice(0, totalMaxData ).map((video, index) => (
                                                 <Zoom key={video.id} delay={index * 50}>
                                                     <div className="group relative cursor-pointer">
                                                         <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 group-hover:scale-105 transition ease-in-out">
@@ -175,6 +190,24 @@ const GallerySection = ({ totalMaxData = 8, classes = "", isLink = false }) => {
                                                 </Zoom>
                                             ))}
                                         </div>
+                                    ) : typeName === 'Photo' && photos.length > 0 ? (
+                                        <div className="mt-6 grid grid-cols-1 gap-x-2 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
+                                            {photos.slice(0, totalMaxData).map((photo, index) => (
+                                                <Zoom key={photo.id} delay={index * 50}>
+                                                    <div className="group relative cursor-pointer">
+                                                        <div className="max-h-72 h-72 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 group-hover:scale-105 transition ease-in-out ">
+                                                            <a href="https://www.instagram.com/surganarasarestaurant/" target="_blank">
+                                                            <img
+                                                                alt={photo.caption || 'Instagram Photo'}
+                                                                src={photo.media_url}
+                                                                className="h-full w-full object-cover object-center "
+                                                            />
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </Zoom>
+                                            ))}
+                                        </div>
                                     ) : (
                                         <p>No media available</p>
                                     )}
@@ -184,7 +217,7 @@ const GallerySection = ({ totalMaxData = 8, classes = "", isLink = false }) => {
                     </Tabs>
 
                     {/* Pagination: Load More button */}
-                    {nextPage && (
+                    {/* {nextPage && (
                         <div className="flex justify-center mt-8">
                             <button
                                 className="bg-mainyellow-900 text-white py-2 px-4 rounded-lg hover:bg-mainyellow-700"
@@ -194,7 +227,7 @@ const GallerySection = ({ totalMaxData = 8, classes = "", isLink = false }) => {
                                 {isLoadingMore ? 'Loading more...' : 'Load More'}
                             </button>
                         </div>
-                    )}
+                    )} */}
 
                     <div className="mx-auto max-w-96 mt-20">
                         <a

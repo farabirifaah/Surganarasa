@@ -44,14 +44,14 @@ export default function HeroSection() {
             alt={`image ${index + 1}`}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 grid h-full w-full items-center bg-black/40">
-            <div className="container mx-auto px-4 sm:px-16 w-full max-w-xs xl:max-w-screen-2xl lg:max-w-screen-lg md:max-w-screen-md sm:max-w-sm">
+          <div className="absolute inset-0 grid h-full w-full items-center bg-black/25">
+            <div className="container mx-auto px-4 sm:px-16 w-full max-w-xs xl:max-w-screen-2xl lg:max-w-screen-lg md:max-w-screen-lg sm:max-w-md">
               <Slide>
                 <Typography
                   variant="h1"
                   color="white"
-                  className="mb-4 text-2xl md:text-4xl lg:text-6xl"
-                  style={{ fontFamily: "David Libre" }}
+                  className="mb-4 text-3xl md:text-4xl lg:text-6xl font-extrabold drop-shadow-lg"
+                  style={{ fontFamily: "David Libre", textShadow: '0 5px 20px rgba(0, 0, 0, 0.6)' }}
                 >
                   {slide.title}
                 </Typography>
@@ -59,7 +59,9 @@ export default function HeroSection() {
               <Slide>
                 <Typography
                   color="white"
-                  className="mb-12 opacity-80 text-md md:text-xl lg:text-xl"
+                  className="mb-12 opacity-80 text-lg md:text-xl lg:text-xl font-medium"
+                  style={{ fontFamily: "David Libre", textShadow: '0 5px 20px rgba(0, 0, 0, 0.6)' }}
+
                 >
                   {slide.description}
                 </Typography>
@@ -69,7 +71,7 @@ export default function HeroSection() {
                   <button
                     onClick={()=> {navigate('/menu')}}
                     style={{ borderRadius: '14px 4px 14px 4px' }}
-                    className="leading-6 w-40 sm:w-full md:w-40 h-10 bg-maingreen-900 hover:bg-maingreen-900/70 hover:text-mainyellow-900 border-maingreen-900/80 text-mainyellow-900/80 rounded-md border border-slate-300 p-1 text-center text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    className="leading-6 w-40 sm:w-40 md:w-40 h-10 bg-maingreen-900 hover:bg-maingreen-900/70 hover:text-mainyellow-900 border-maingreen-900/80 text-mainyellow-900/80 rounded-md border border-slate-300 p-1 text-center text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                   >
                     Menu

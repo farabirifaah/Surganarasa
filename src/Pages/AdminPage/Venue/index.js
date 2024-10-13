@@ -33,6 +33,8 @@ const AdminVenue = () => {
   const [active, setActive] = useState('');
   const [activeTitle, setActiveTitle] = useState('');
   const [activeDescription, setActiveDescription] = useState('');
+  const [oldImage, setOldImage] = useState(null);
+
 
   const fetchData = async () => {
     try {
@@ -55,7 +57,8 @@ const AdminVenue = () => {
     if (venue) {
       setTitle(venue.title);
       setDescription(venue.description);
-      setImage(venue.imgelink);
+      setImage(null);
+      setOldImage(venue.imgelink);
       setEditingVenueId(venue.id);
     } else {
       setTitle('');
@@ -96,7 +99,7 @@ const AdminVenue = () => {
     setErrorMessage('');
 
     try {
-      let imageURL = '';
+      let imageURL = oldImage;
 
       if (image) {
         const compressedImage = await handleImageCompression(image);
@@ -150,7 +153,7 @@ const AdminVenue = () => {
     setDialogOpen(false);
   };
 
-  const TABLE_HEAD = ["Title", "Description", "Image", "Actions"];
+  const TABLE_HEAD = ["Image", "Title", "Description", "Actions"];
 
   return (
     <div className='container mx-auto mt-10'>
@@ -203,6 +206,11 @@ const AdminVenue = () => {
               onChange={(e) => setImage(e.target.files[0])}
               className="block w-full text-gray-600"
               accept="image/*"
+            />
+             <img
+              className="h-64 mt-2 w-64 rounded-lg object-cover object-center"
+              src={oldImage}
+              alt={activeTitle}
             />
           </div>
         </DialogBody>
@@ -274,6 +282,16 @@ const AdminVenue = () => {
             {venues.length > 0 ? (
               venues.map((venue) => (
                 <tr key={venue.id} className={`even:bg-blue-gray-50/50`}>
+                   <td className="p-4">
+                    {venue.imgelink && (
+                      <img
+                        src={venue.imgelink}
+                        alt={venue.title}
+                         className="h-16 w-16 rounded-md cursor-pointer object-cover"
+                        onClick={() => handleImageClick(venue)} // Add click handler
+                      />
+                    )}
+                  </td>
                   <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-normal">
                       {venue.title}
@@ -284,16 +302,7 @@ const AdminVenue = () => {
                       {venue.description}
                     </Typography>
                   </td>
-                  <td className="p-4">
-                    {venue.imgelink && (
-                      <img
-                        src={venue.imgelink}
-                        alt={venue.title}
-                        className="h-10 w-10 object-cover rounded-full cursor-pointer"
-                        onClick={() => handleImageClick(venue)} // Add click handler
-                      />
-                    )}
-                  </td>
+                 
                   <td className="p-4">
                     <IconButton onClick={() => openModal(venue)} className="mr-2">
                       <PencilSquareIcon color='white' width={16} height={16}/>

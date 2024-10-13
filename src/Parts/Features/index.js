@@ -1,60 +1,74 @@
+import { useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Typography,
+  Button,
+  Tooltip,
+  IconButton,
+} from "@material-tailwind/react";
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase'; // Adjust this import based on your firebase setup
+
+
 import { faWifi, faLock, faCar, faMusic, faCoffee, faLeaf, faCake, faToilet, faCalendarAlt, faUtensils, faHome, faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { Zoom } from 'react-awesome-reveal'
 import TitleComponent from '../../Components/title'
 
 const features = [
-  // {
-  //   name: 'Wifi Gratis',
-  //   description:
-  //     'Tetap terhubung sambil menikmati hidangan dengan WiFi berkecepatan tinggi yang tersedia di seluruh area restoran.',
-  //   icon: faWifi,
-  // },
   {
+    imageSrc:'',
     name: 'Toilet Bersih',
-    description:
-      'Toilet kami selalu terjaga kebersihannya, memastikan kenyamanan dan kebersihan untuk semua tamu.',
-    icon: faToilet,
   },
   {
+    imageSrc:'',
     name: 'Valet Parkir Gratis',
-    description:
-      'Layanan valet parking yang nyaman tersedia agar Anda dapat fokus menikmati pengalaman bersantap Anda.',
-    icon: faCar,
   },
   {
+    imageSrc:'',
     name: 'Musik Live',
-    description:
-      'Nikmati penampilan musik live dari artis lokal setiap akhir pekan, menambah suasana makan yang menyenangkan.',
-    icon: faMusic,
   },
   {
+    imageSrc:'',
     name: 'Suasana nyaman',
-    description:
-      'Bersantai di area tempat duduk luar ruangan kami, ideal untuk menikmati udara segar dan pengalaman bersantap yang santai.',
-    icon: faLeaf,
   },
   {
-    name: 'Menu Tradisional dan Variatif',
-    description:
-      'Nikmati berbagai pilihan hidangan tradisional khas Indonesia yang variatif, dibuat dengan bahan-bahan segar.',
-    icon: faUtensils,
+    imageSrc:'',
+    name: 'Menu Variatif',
   },
   {
+    imageSrc:'',
     name: 'Venue Tradisional yang Nyaman',
-    description:
-      'Tempat kami didesain untuk memberikan suasana yang hangat dan nyaman, cocok untuk berkumpul bersama teman atau keluarga.',
-    icon: faHome,
   },
   {
+    imageSrc:'',
     name: 'Reservasi Online',
-    description:
-      'Pesan tempat dengan mudah melalui sistem reservasi online kami untuk pengalaman bersantap tanpa khawatir.',
-    icon: faLaptop,
   },
 ]
 
 export default function FeatureSection() {
+  const [collections, setCollections] = useState([]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'feature'));
+        const servicesList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setCollections(servicesList);
+      } catch (error) {
+        console.error("Error fetching services: ", error);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   return (
     <div className="bg-[url('/src/Assets/bg4.svg')] bg-repeat bg-center bg-[length:1800px_1068.44px]  py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -63,26 +77,61 @@ export default function FeatureSection() {
                      <TitleComponent
                        classes="text-mainyellow-900"
                        title="Layanan Surganarasa"
-                       description="Lihat beberapa keunggulan dari kami"
+                       description=""
                        descClass="text-white"
                      />
                     </Zoom>
         </div>
-        <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
-          <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-3 lg:gap-y-16">
-            {features.map((feature, index) => (
-              <Zoom key={feature.name} delay={150 * index}>
-                <div className="relative pl-16">
-                <dt className="text-sm font-light leading-10 text-white">
-                  <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center align-middle rounded-lg bg-mainyellow-900">
-                    <FontAwesomeIcon icon={feature.icon} aria-hidden="true" className="h-6 w-6 text-maingreen-900" />
+        <div className="mx-auto w-full">
+          <dl className="grid max-full grid-cols-2 gap-x-4 gap-y-4 lg:max-w-none md:grid-cols-3 lg:grid-cols-5 lg:gap-y-16">
+          {collections.map((collection, index) => (
+              <Zoom key={collection.title} delay={50 * index}>
+              <Card className="w-full bg-[url('/src/Assets/card.svg')] min-h-52" 
+               style={{ borderRadius: "28px 28px 28px 28px", padding: 0 }}
+              >
+                <CardHeader
+                  floated={false}
+                  color="blue-gray"
+                  className='mx-auto m-2 shadow-none'
+                  style={{
+                    borderRadius: "18px 18px 6px 6px",
+                    padding: 0,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                >
+                  <div className='relative max-h-28 lg:max-h-28 md:max-h-32 overflow-hidden'>
+                    <img
+                      src={collection.imgelink ? collection.imgelink : "https://img.freepik.com/free-vector/photos-concept-illustration_114360-193.jpg?t=st=1728790703~exp=1728794303~hmac=ab5627b392ac55b39cacd3e80dab886bc6dce0687f5f2ce71e5f5dc99b1c3ae6&w=1380"}
+                      alt="ui/ux review check"
+                      className='shadow-none object-cover w-full h-full'
+                    />
+                    <div className="to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-tr from-transparent via-transparent to-black/60" />
                   </div>
-                  {feature.name}
-                </dt>
-              </div>
+                </CardHeader>
+
+                <CardBody className='m-0 p-2'>
+                  <div className="flex items-center justify-between">
+                  <h3
+                      className="w-full font-extrabold text-base"
+                      style={{
+                          fontFamily: "David Libre",
+                          color: "#FFBB00",
+                          textAlign: "center",
+                          marginBottom: 12,
+                      }}
+                  >
+                    {collection.title}
+                    </h3>
+                  
+                  </div>
+                </CardBody>
+              </Card>
               </Zoom>
             ))}
           </dl>
+          
         </div>
       </div>
     </div>

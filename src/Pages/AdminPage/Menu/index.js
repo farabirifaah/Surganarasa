@@ -24,8 +24,10 @@ const AdminMenu = () => {
   const [type, setType] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
+  const [oldImage, setOldImage] = useState(null);
   const [price, setPrice] = useState('');
   const [isAvailable, setIsAvailable] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(false); // New state for highlighting
   const [measurement, setMeasurement] = useState('');
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [variantSubOptions, setVariantSubOptions] = useState({}); // State for sub-options
@@ -98,6 +100,7 @@ const AdminMenu = () => {
       setDescription(menu.description || '');
       setPrice(menu.price || '');
       setIsAvailable(menu.isAvailable || false);
+      setIsHighlighted(menu.isHighlighted || false); // Set highlighted state
       setMeasurement(menu.measurement || '');
 
       const currentVariants = menu.variants && Array.isArray(menu.variants) ? menu.variants : [];
@@ -111,6 +114,7 @@ const AdminMenu = () => {
 
       setEditingMenuId(menu.id);
       setImage(null);
+      setOldImage(menu.image)
     } else {
       setMenuName('');
       setCategory('');
@@ -118,6 +122,7 @@ const AdminMenu = () => {
       setDescription('');
       setPrice('');
       setIsAvailable(false);
+      setIsHighlighted(false); // Reset highlighted state
       setMeasurement('');
       setImage(null);
       setEditingMenuId(null);
@@ -137,6 +142,7 @@ const AdminMenu = () => {
     setDescription('');
     setPrice('');
     setIsAvailable(false);
+    setIsHighlighted(false); // Reset highlighted state
     setMeasurement('');
     setImage(null);
     setEditingMenuId(null);
@@ -171,11 +177,9 @@ const AdminMenu = () => {
   
       // Check if editing an existing menu and no new image is uploaded
       if (editingMenuId && !image) {
-        // Retain the old image URL if no new image is uploaded
         const currentMenu = menuItems.find((menu) => menu.id === editingMenuId);
         imageURL = currentMenu ? currentMenu.image : '';
       } else if (image) {
-        // Upload new image only if a new image is provided
         const compressedImage = await handleImageCompression(image);
         const imageRef = ref(storage, `menu_images/${compressedImage.name}`);
         const snapshot = await uploadBytes(imageRef, compressedImage);
@@ -194,9 +198,10 @@ const AdminMenu = () => {
         description,
         price: parseFloat(price),
         isAvailable,
+        isHighlighted, // Save highlighted state
         measurement,
         variants: variantsWithSubOptions,
-        image: imageURL, // Retain old image if no new image is uploaded
+        image: imageURL,
       };
   
       if (editingMenuId) {
@@ -248,7 +253,6 @@ const AdminMenu = () => {
     }
   };
 
-  // Function to delete a variant
   const handleDeleteVariant = (variantName) => {
     setSelectedVariants(selectedVariants.filter((variant) => variant !== variantName));
     const newVariantSubOptions = { ...variantSubOptions };
@@ -256,7 +260,6 @@ const AdminMenu = () => {
     setVariantSubOptions(newVariantSubOptions);
   };
 
-  // Function to delete a subOption within a variant
   const handleDeleteSubOption = (variant, subOption) => {
     setVariantSubOptions({
       ...variantSubOptions,
@@ -291,7 +294,18 @@ const AdminMenu = () => {
     }
   };
 
-  const TABLE_HEAD = ["No.","Image", "Menu Name", "Category", "Type", "Description", "Price", "Available", "Measurement", "Variants", "Actions"];
+  const handleToggleHighlight = async (menu) => {
+    const updatedHighlight = !menu.isHighlighted;
+    const menuRef = doc(db, 'menu', menu.id);
+    try {
+      await updateDoc(menuRef, { isHighlighted: updatedHighlight });
+      fetchData();
+    } catch (error) {
+      console.error('Error updating highlight status: ', error);
+    }
+  };
+
+  const TABLE_HEAD = ["No.","Image", "Menu Name", "Category", "Type", "Description", "Price", "Available", "Highlighted", "Measurement", "Variants", "Actions"];
 
   return (
     <div className='container mx-auto mt-10'>
@@ -389,6 +403,17 @@ const AdminMenu = () => {
               Available
             </Typography>
           </div>
+          <div className="flex items-center mb-4">
+            <input
+              type="checkbox"
+              checked={isHighlighted}
+              onChange={() => setIsHighlighted(!isHighlighted)}
+              className="mr-2"
+            />
+            <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
+              Highlighted
+            </Typography>
+          </div>
           <div>
             <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
               Measurement
@@ -471,6 +496,11 @@ const AdminMenu = () => {
               onChange={(e) => setImage(e.target.files[0])}
               className="block w-full mt-2 p-2 border rounded"
             />
+             <img
+              className="h-64 mt-2 w-64 rounded-lg object-cover object-center"
+              src={oldImage}
+              alt={activeTitle}
+            />
           </div>
         </DialogBody>
         <DialogFooter>
@@ -480,38 +510,6 @@ const AdminMenu = () => {
         </DialogFooter>
       </Dialog>
 
-      {/* Dialog for showing images */}
-      <Dialog size="lg" className="bg-white max-h-svh" open={dialogOpen} handler={() => setDialogOpen(false)}>
-        <DialogHeader className="justify-between">
-          <Typography variant="h6" color="blue-gray">
-            {activeTitle}
-          </Typography>
-        </DialogHeader>
-        <DialogBody>
-          <Zoom>
-            <img
-              className="h-64 lg:h-auto md:h-auto sm:h-auto w-full rounded-lg object-cover object-center"
-              src={active}
-              alt={activeTitle}
-              style={{ maxHeight: 600 }}
-            />
-          </Zoom>
-          <Typography className="mt-5 font-normal text-gray-700 text-sm">
-            {activeDescription}
-          </Typography>
-        </DialogBody>
-        <DialogFooter>
-          <button
-            onClick={() => setDialogOpen(false)}
-            className="w-full font-bold bg-mainyellow-900/80 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            type="button"
-          >
-            Close
-          </button>
-        </DialogFooter>
-      </Dialog>
-
-      {/* Table */}
       <Card className="h-full w-full overflow-scroll">
         <div className='flex flex-auto flex-row justify-between m-10'>
           <Typography variant='h4'>
@@ -591,6 +589,11 @@ const AdminMenu = () => {
                   </td>
                   <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-normal">
+                      {menu.isHighlighted ? 'Yes' : 'No'}
+                    </Typography>
+                  </td>
+                  <td className="p-4">
+                    <Typography variant="small" color="blue-gray" className="font-normal">
                       {menu.measurement}
                     </Typography>
                   </td>
@@ -613,6 +616,12 @@ const AdminMenu = () => {
                       className={`ml-2 ${menu.isAvailable ? 'bg-red-500' : 'bg-green-500'} text-white`}
                     >
                       {menu.isAvailable ? 'Unavailable' : 'Available'}
+                    </Button>
+                    <Button
+                      onClick={() => handleToggleHighlight(menu)}
+                      className={`ml-2 ${menu.isHighlighted ? 'bg-red-500' : 'bg-green-500'} text-white`}
+                    >
+                      {menu.isHighlighted ? 'Unhighlight' : 'Highlight'}
                     </Button>
                   </td>
                 </tr>

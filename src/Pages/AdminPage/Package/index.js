@@ -25,6 +25,7 @@ const AdminPackage = () => {
   const [pax, setPax] = useState('');
   const [price, setPrice] = useState('');
   const [imageFile, setImageFile] = useState(null); // New state for image File
+  const [videoUrl, setVideoUrl] = useState(null); // New state for image File
   const [existingImage, setExistingImage] = useState(''); // New state for existing image URL
   const [packages, setPackages] = useState([]);
   const [editingPackageId, setEditingPackageId] = useState(null);
@@ -60,6 +61,7 @@ const AdminPackage = () => {
   const openModal = (pkg = null) => {
     if (pkg) {
       setName(pkg.name);
+      setVideoUrl(pkg.videoUrl);
       setDescription(pkg.description);
       setPax(pkg.pax);
       setPrice(pkg.price);
@@ -71,6 +73,7 @@ const AdminPackage = () => {
       setEditingPackageId(pkg.id);
     } else {
       setName('');
+      setVideoUrl('');
       setDescription('');
       setPax('');
       setPrice('');
@@ -88,6 +91,7 @@ const AdminPackage = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setName('');
+    setVideoUrl('');
     setDescription('');
     setPax('');
     setPrice('');
@@ -121,7 +125,6 @@ const AdminPackage = () => {
 
     try {
       let imageURL = existingImage; // Default to existing image
-      console.log(imageURL);
       if (imageFile) {
         const compressedImage = await handleImageCompression(imageFile);
         const imageRef = ref(storage, `package_images/${compressedImage.name}`);
@@ -133,6 +136,7 @@ const AdminPackage = () => {
         const packageRef = doc(db, 'package', editingPackageId);
         await updateDoc(packageRef, { 
           name, 
+          videoUrl,
           description, 
           pax, 
           price, 
@@ -144,6 +148,7 @@ const AdminPackage = () => {
       } else {
         await addDoc(collection(db, 'package'), { 
           name, 
+          videoUrl,
           description, 
           pax, 
           price, 
@@ -186,7 +191,13 @@ const AdminPackage = () => {
     setDialogOpen(false);
   };
 
-  const TABLE_HEAD = ["Name", "Description", "Pax", "Price", "Image", "Best Seller", "Highlight", "Other", "Actions"];
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault(); // Prevent form submission
+    }
+  };
+
+  const TABLE_HEAD = [ "Image", "Name", "Description", "Pax", "Price", "Best Seller", "Highlight", "Other", "Actions"];
 
   return (
     <div className='container mx-auto mt-10'>
@@ -211,10 +222,10 @@ const AdminPackage = () => {
             <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
               Name
             </Typography>
-            <Input
-              color="gray"
-              size="lg"
+            <Textarea
+              rows={3}
               placeholder="eg. Package Name"
+              onKeyDown={handleKeyDown}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -228,6 +239,7 @@ const AdminPackage = () => {
               placeholder="eg. Package Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
           </div>
           <div className="flex gap-4">
@@ -256,6 +268,18 @@ const AdminPackage = () => {
               />
             </div>
           </div>
+          <div className="w-full">
+              <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
+                Video URL
+              </Typography>
+              <Input
+                color="gray"
+                size="lg"
+                placeholder="https://..."
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+              />
+            </div>
           <div>
             <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium">
               Image
@@ -273,7 +297,7 @@ const AdminPackage = () => {
             {/* Show existing image when editing and no new image is selected */}
             {editingPackageId && existingImage && !imageFile && (
               <div className="mt-2">
-                <img src={existingImage} alt="Existing Package" className="h-20 w-20 object-cover rounded" />
+                <img src={existingImage} alt="Existing Package" className="h-64 w-64 object-cover rounded" />
               </div>
             )}
           </div>
@@ -373,6 +397,16 @@ const AdminPackage = () => {
               packages.map((pkg) => (
                 <tr key={pkg.id} className={`even:bg-blue-gray-50/50`}>
                   <td className="p-4">
+                    {pkg.imageSrc && (
+                      <img
+                        src={pkg.imageSrc}
+                        alt={pkg.name}
+                        className="h-16 w-16 rounded-md cursor-pointer object-cover"
+                        onClick={() => handleImageClick(pkg)} // Add click handler
+                      />
+                    )}
+                  </td>
+                  <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-normal">
                       {pkg.name}
                     </Typography>
@@ -391,16 +425,6 @@ const AdminPackage = () => {
                     <Typography variant="small" color="blue-gray" className="font-normal">
                       Rp. {pkg.price}
                     </Typography>
-                  </td>
-                  <td className="p-4">
-                    {pkg.imageSrc && (
-                      <img
-                        src={pkg.imageSrc}
-                        alt={pkg.name}
-                        className="h-10 w-10 object-cover rounded-full cursor-pointer"
-                        onClick={() => handleImageClick(pkg)} // Add click handler
-                      />
-                    )}
                   </td>
                   <td className="p-4 text-center">
                     <Typography variant="small" color="blue-gray" className="font-normal">

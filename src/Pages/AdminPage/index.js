@@ -13,6 +13,8 @@ import AdminMenuType from './MenuType';
 import AdminMenu from './Menu';
 import AdminMenuCategory from './MenuCategory';
 import ContactAdmin from './Contact';
+import FeatureAdmin from './Feature/Feature';
+import GalleryAdmin from './Gallery';
 
 const Home = () => <div>Home Page</div>;
 
@@ -40,7 +42,9 @@ const AdminPage = () => {
             <Route path="/" element={currentUser ? <Home /> : <Navigate to="/login" />} />
             <Route path="package" element={currentUser ? <AdminPackage /> : <Navigate to="/login" />} />
             <Route path="venue" element={currentUser ? <AdminVenue /> : <Navigate to="/login" />} />
+            <Route path="feature" element={currentUser ? <FeatureAdmin /> : <Navigate to="/login" />} />
             <Route path="service" element={currentUser ? <AdminService /> : <Navigate to="/login" />} />
+            <Route path="gallery" element={currentUser ? <GalleryAdmin /> : <Navigate to="/login" />} />
             <Route path="slideShow" element={currentUser ? <HeroService /> : <Navigate to="/login" />} />
             <Route path="broadcast" element={currentUser ? <AdminCustomer /> : <Navigate to="/login" />} />
             <Route path="contact" element={currentUser ? <ContactAdmin /> : <Navigate to="/login" />} />

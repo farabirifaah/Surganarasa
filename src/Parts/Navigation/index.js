@@ -19,8 +19,8 @@ const navigationLinks = [
   { name: 'Package', href: '/' },
   { name: 'Venue', href: '/' },
   { name: 'Gallery', href: '/' },
-  { name: 'Contact', href: '/contact' },
-  { name: 'Investor', href: '/investor' },
+  { name: 'Contact', href: '/' },
+  // { name: 'Investor', href: '/investor' },
 ];
 
 export default function Navigation() {

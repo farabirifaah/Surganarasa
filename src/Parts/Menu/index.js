@@ -51,11 +51,13 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                 ...doc.data(),
             }));
 
-            const allMenuType = { id: 'all', typeName: 'All' };
-            setMenuTypes([allMenuType, ...menuTypeList]);
+            // const allMenuType = { id: 'all', typeName: 'All' };
+            const highlightedMenuType = { id: 'highlightedMenu', typeName: 'Our Menu' };
+            setMenuTypes([highlightedMenuType, ...menuTypeList]);
             if (menuTypeList.length > 0) {
                 setActiveTab('All');
             }
+
         } catch (error) {
             console.error('Error fetching menu types: ', error);
         }
@@ -65,10 +67,14 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
         try {
             const menuCollection = collection(db, 'menu');
             let q;
-
+// console.log(menuType)
             if (menuType === 'All') {
-                q = query(menuCollection, where('isAvailable', '==', true), limit(totalMaxData)); // Limit to 8 products
-            } else {
+                q = query(menuCollection, where('isAvailable', '==', true), where('isHighlighted', '==', true), limit(totalMaxData)); // Limit to 8 products
+            }
+            else if (menuType === 'Our Menu') {
+                q = query(menuCollection, where('isAvailable', '==', true), where('isHighlighted', '==', true), limit(totalMaxData)); // Limit to 8 products
+            }
+            else {
                 q = query(menuCollection, where('type', '==', menuType), where('isAvailable', '==', true), limit(totalMaxData)); // Limit to 8 products
             }
 
@@ -84,8 +90,10 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
     };
 
     const formatAmount = (amount) => {
-        return `${parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
-    };
+        return `${Math.round(amount)
+          .toString()
+          .replace(/\d(?=(\d{3})+$)/g, "$&,")}`;
+      };
 
     useEffect(() => {
         fetchMenuTypes();
@@ -96,6 +104,15 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
             fetchProducts(activeTab);
         }
     }, [activeTab]);
+
+    const formatList = (text) => {
+        return text.split('\n').map((line, index) => (
+          <React.Fragment key={index}>
+            {line}
+            <br />
+          </React.Fragment>
+        ));
+      };
 
     const navigate = useNavigate();
 
@@ -119,21 +136,27 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                             descClass="text-white"
                         />
                     </Zoom>
-                    {
-                        !showButton && (
-                            <button
+                    <div className="items-center flex flex-col sm:flex-row sm:flex-wrap sm:grid-cols-2 justify-between mt-10">
+                       <Zoom>
+                        <p className="text-mainyellow-900">
+                                Jelajahi semua menu spesial kami dengan satu klik. Temukan hidangan favorit Anda sekarang!
+                        </p>
+                       </Zoom>
+                        <Zoom>
+                            <a
                                 style={{ borderRadius: "14px 4px 14px 4px" }}
                                 className="w-64 ml-2 my-5 bg-mainyellow-900/70 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-maingreen-900 rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="button"
-                                onClick={() => window.open("https://firebasestorage.googleapis.com/v0/b/surganarasa-36192.appspot.com/o/Surgana%20Rasa-Menu-v5-rev_7-7%20(1)_compressed.pdf?alt=media&token=968dfbce-59ab-42c8-a543-855de4e4a603", "_blank")}
+                                href="https://surganarasa.com/buku-menu.pdf"
+                                target="_blank"
                             >
-                                buku menu pdf
-                            </button>
-                        )
-                    }
+                                Download Menu PDF
+                            </a>
+                        </Zoom>
 
+                       </div>
                     <Tabs value={activeTab}>
-                        <div className="overflow-x-auto mt-8">
+                        <div className="overflow-x-auto scroll mt-8">
                             <TabsHeader
                                 className="rounded-none bg-transparent p-0 whitespace-nowrap"
                                 indicatorProps={{
@@ -148,8 +171,8 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                                         className={`text-mainyellow-900`}
                                     >
                                         <Zoom delay={index * 50}>
-                                            <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
-                                                {typeName}
+                                            <p className=" overflow-hidden text-ellipsis whitespace-nowrap">
+                                                {/* {typeName} */}
                                             </p>
                                         </Zoom>
                                     </Tab>
@@ -203,7 +226,7 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                                                     className="text-lg font-semibold text-mainyellow-900"
                                                     style={{ fontFamily: "David Libre" }}
                                                 >
-                                                    Rp. {formatAmount(product.price)}
+                                                    Rp. {formatAmount(product.price)},-
                                                 </p>
                                                 <p
                                                     className="text-sm font-semibold text-white"
@@ -213,7 +236,8 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                                                 </p>
                                             </div>
                                             <p className="mt-2 text-sm text-white">
-                                                {product.description}
+                                                {formatList(product.description)}
+                                                
                                             </p>
 
                                             {product.variants.length > 0 &&
@@ -237,16 +261,16 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                                         type="button"
                                         onClick={() => navigate('/menu')}
                                     >
-                                        Lihat Menu Terbaik Kami
+                                        Lihat Semua Menu Terbaik
                                     </button>
-                                    <button
+                                    {/* <button
                                         style={{ borderRadius: "14px 4px 14px 4px" }}
                                         className="w-full bg-maingreen-900 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-mainyellow-900 rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                         type="button"
                                         onClick={() => window.open("https://firebasestorage.googleapis.com/v0/b/surganarasa-36192.appspot.com/o/Surgana%20Rasa-Menu-v5-rev_7-7%20(1)_compressed.pdf?alt=media&token=968dfbce-59ab-42c8-a543-855de4e4a603", "_blank")}
                                     >
                                         buku menu pdf
-                                    </button>
+                                    </button> */}
                                 </div>
                             </Zoom>
 
@@ -257,7 +281,7 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                 </div>
             </div>
 
-            <Dialog size="xl" className="bg-[url('/src/Assets/bg4.svg')]  overflow-y-auto max-h-dvh" open={dialogOpen} handler={handleDialogClose}>
+            <Dialog size="lg" className="bg-[url('/src/Assets/bg4.svg')] p-6  overflow-y-auto max-h-svh" open={dialogOpen} handler={handleDialogClose}>
                 <DialogHeader className="justify-between">
                     <Typography variant="h6" className="w-full font-semibold"
                         style={{ fontFamily: "David Libre", fontSize: 26, color: "#FFBB00", textAlign: "center" }}>
@@ -306,7 +330,7 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                     </div>
 
                     <Typography className="mt-5 font-normal text-white text-sm">
-                        {activeDescription}
+                        {formatList(activeDescription)}
                     </Typography>
                 </DialogBody>
                 <DialogFooter>
