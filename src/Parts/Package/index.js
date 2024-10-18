@@ -258,14 +258,14 @@ export default function PackageSection({ showButton = true, maxData = 4 }) {
         <div className={`grid gap-4 ${hasVideo ? 'lg:grid-cols-2 md:grid-cols-1' : 'grid-cols-1'}`}>
           <a href={active} target="_blank" rel="noopener noreferrer">
             <img
-              className={`h-64 max-h-[275px] lg:h-96 xl:h-96 ${hasVideo ? 'w-full' : 'mx-auto'} md:h-auto sm:h-auto w-full rounded-lg object-cover object-center`}
+              className={`h-64 max-h-[300px] lg:h-96 xl:h-96 ${hasVideo ? 'w-full' : 'mx-auto'} md:h-auto sm:h-auto w-full rounded-lg object-cover object-center`}
               src={active}
               alt={activeTitle}
             />
           </a>
           {activeVideoUrl && (
              <video
-             className="w-full h-full md:max-h-[275px] lg:h-96 xl:h-96 rounded-lg object-cover object-center"
+             className="w-full max-h-[300px] lg:h-96 xl:h-96 rounded-lg object-cover object-center"
              controls
              autoPlay
            >

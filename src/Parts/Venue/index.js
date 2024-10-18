@@ -179,7 +179,7 @@ export default function VenueSection() {
             </a>
           </Zoom>
           <Typography className="mt-5 font-normal text-white text-sm">
-            {activeDescription}
+            {formatList(activeDescription)}
           </Typography>
         </DialogBody>
         <DialogFooter>

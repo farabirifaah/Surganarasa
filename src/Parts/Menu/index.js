@@ -145,7 +145,7 @@ const MenuSection = ({ totalMaxData = 8, classes, showButton = true }) => {
                         <Zoom>
                             <a
                                 style={{ borderRadius: "14px 4px 14px 4px" }}
-                                className="w-64 ml-2 my-5 bg-mainyellow-900/70 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-maingreen-900 rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                className="w-64 ml-2 my-5 bg-mainyellow-900/70 hover:bg-mainyellow-900/10 hover:text-mainyellow-900 border-mainyellow-900 text-white rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="button"
                                 href="https://surganarasa.com/buku-menu.pdf"
                                 target="_blank"

@@ -44,7 +44,7 @@ export default function HeroSection() {
             alt={`image ${index + 1}`}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 grid h-full w-full items-center bg-black/25">
+          <div className="absolute inset-0 grid h-full w-full items-center bg-black/45">
             <div className="container mx-auto px-4 sm:px-16 w-full max-w-xs xl:max-w-screen-2xl lg:max-w-screen-lg md:max-w-screen-lg sm:max-w-md">
               <Slide>
                 <Typography
